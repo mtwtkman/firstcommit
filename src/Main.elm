@@ -1,16 +1,89 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
-import Browser
-import Github.Object
-import Github.Object.Repository as Repository
-import Github.Query as Query
-import Graphql.Http
-import Graphql.Operation exposing (RootQuery)
-import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Html exposing (br, button, div, h1, input, text)
+import Browser as Browser
+import GraphQL.Client.Http as GraphQLClient
+import GraphQL.Request.Builder exposing (..)
+import GraphQL.Request.Builder.Arg as Arg
+import GraphQL.Request.Builder.Variable as Var
+import Html exposing (Html, br, button, div, input, text)
 import Html.Attributes exposing (placeholder, value)
 import Html.Events exposing (onClick, onInput)
-import RemoteData exposing (RemoteData)
+import Http exposing (header)
+import Task exposing (Task)
+
+
+
+-- GRAPHQL
+
+
+type alias CommitSummary =
+    { latestCursor : List String
+    , totalCount : Int
+    }
+
+
+commitSummaryRequest : Model -> Request Query (Maybe CommitSummary)
+commitSummaryRequest model =
+    let
+        owner =
+            Var.required "owner" .owner Var.string
+
+        name =
+            Var.required "name" .name Var.string
+
+        qualifiedName =
+            Var.required "qualifiedName" .qualifiedName Var.string
+
+        historyFirst =
+            Var.required "first" .first Var.int
+
+        totalCount =
+            field "totalCount" [] int
+
+        edges =
+            field "edges" [] (list (extract (field "cursor" [] string)))
+
+        history =
+            field "history"
+                [ ( "first", Arg.variable historyFirst ) ]
+                (object CommitSummary
+                    |> with edges
+                    |> with totalCount
+                )
+
+        commitFragment =
+            fragment "commitFragment"
+                (onType "Commit")
+                (extract history)
+
+        target =
+            extract
+                (field "target"
+                    []
+                    (extract (assume (fragmentSpread commitFragment)))
+                )
+
+        ref =
+            extract
+                (field "ref"
+                    [ ( "qualifiedName", Arg.variable qualifiedName ) ]
+                    target
+                )
+    in
+    extract
+        (field "repository"
+            [ ( "owner", Arg.variable owner )
+            , ( "name", Arg.variable name )
+            ]
+            (nullable ref)
+        )
+        |> queryDocument
+        |> request
+            { owner = model.owner
+            , name = model.name
+            , qualifiedName = model.qualifiedName
+            , first = 1
+            }
 
 
 
@@ -20,99 +93,40 @@ import RemoteData exposing (RemoteData)
 main =
     Browser.document
         { init = init
-        , update = update
         , view = view
+        , update = update
         , subscriptions = \_ -> Sub.none
         }
 
 
 
--- TYPE
+-- MODEL
 
 
-type Msg
-    = InputName String
-    | InputOwner String
-    | InputApiToken String
-    | FetchCommitCount
-    | FetchedCommitCount CommitCountResponse
-
-
-type alias CommitCountResponse =
-    RemoteData (Graphql.Http.Error Response) Response
+type alias CommitSummaryResponse =
+    Result GraphQLClient.Error (Maybe CommitSummary)
 
 
 type alias Model =
-    { name : String
-    , owner : String
-    , apiToken : String
+    { owner : String
+    , name : String
     , qualifiedName : String
-    , commitCount : Int
+    , apiToken : String
+    , commitSummary : Maybe CommitSummary
+    , fetching : Bool
+    , errorMessage : String
     }
-
-
-
--- Graphql
-
-
-type alias CommitHistory =
-    { totalCount : Int
-    }
-
-
-type alias RepositoryRefTarget =
-    { target : CommitHistory
-    }
-
-
-type alias RepositoryRef =
-    { ref : RepositoryRefTarget
-    }
-
-
-type alias Response =
-    { repository : RepositoryRef
-    }
-
-
-query : Model -> SelectionSet Response RootQuery
-query model =
-    SelectionSet.succeed Response
-        |> with
-            (Query.repository { owner = model.owner, name = model.name } (repo model)
-                |> SelectionSet.nonNullOrFail
-            )
-
-
-repo : Model -> SelectionSet RepositoryRef Github.Object.Repository
-repo model =
-    SelectionSet.succeed RepositoryRef
-        |> with (Repository.ref { qualifiedName = model.qualifiedName })
-
-
-
--- HTTP
-
-
-makeRequest : Model -> Cmd Msg
-makeRequest model =
-    query
-        |> Graphql.Http.queryRequest "https://api.github.com/graphql" query
-        |> Graphql.Http.withHeader "Authorization" ("Bearer " ++ model.apiToken)
-        |> Graphql.Http.send (RemoteData.fromResult >> FetchedCommitCount)
-
-
-
--- INIT
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { name = ""
-      , owner = ""
-      , apiToken = ""
-      , qualifiedName = ""
-      , commitCount = 0
+    ( { owner = "mtwtkman"
+      , name = "editor"
+      , qualifiedName = "refs/heads/master"
+      , apiToken = "f4dbcaaf6ebfea54d3a3e229c8f995c7cd0ad850"
+      , commitSummary = Nothing
+      , fetching = False
+      , errorMessage = ""
       }
     , Cmd.none
     )
@@ -122,23 +136,76 @@ init _ =
 -- UPDATE
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+type Msg
+    = UpdateOwner String
+    | UpdateName String
+    | UpdateQualifiedName String
+    | UpdateApiToken String
+    | SendRequest
+    | ReceiveCommitSummaryResponse CommitSummaryResponse
+
+
+sendQueryCommitSummaryRequest : String -> Request Query (Maybe CommitSummary) -> Cmd Msg
+sendQueryCommitSummaryRequest apiToken request =
+    GraphQLClient.customSendQuery
+        { method = "POST"
+        , headers =
+            [ header "Authorization" ("Bearer " ++ apiToken)
+            ]
+        , url = "https://api.github.com/graphql"
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        request
+        |> Task.attempt ReceiveCommitSummaryResponse
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        InputName newName ->
-            ( { model | name = newName }, Cmd.none )
+        UpdateOwner value ->
+            ( { model | owner = value }, Cmd.none )
 
-        InputOwner newOwner ->
-            ( { model | owner = newOwner }, Cmd.none )
+        UpdateName value ->
+            ( { model | name = value }, Cmd.none )
 
-        InputApiToken newApiToken ->
-            ( { model | apiToken = newApiToken }, Cmd.none )
+        UpdateQualifiedName value ->
+            ( { model | qualifiedName = value }, Cmd.none )
 
-        FetchCommitCount ->
-            ( model, makeRequest model )
+        UpdateApiToken value ->
+            ( { model | apiToken = value }, Cmd.none )
 
-        FetchedCommitCount response ->
-            ( { model | commitCount = response.ref.target.totalCount }, Cmd.none )
+        SendRequest ->
+            let
+                errorMessage =
+                    if
+                        List.any String.isEmpty
+                            [ model.owner
+                            , model.name
+                            , model.qualifiedName
+                            , model.apiToken
+                            ]
+                    then
+                        "cannot send"
+
+                    else
+                        ""
+            in
+            ( { model | errorMessage = errorMessage, fetching = True }
+            , sendQueryCommitSummaryRequest model.apiToken (commitSummaryRequest model)
+            )
+
+        ReceiveCommitSummaryResponse response ->
+            let
+                v =
+                    case Result.toMaybe response of
+                        Just resp ->
+                            resp
+
+                        Nothing ->
+                            Nothing
+            in
+            ( { model | commitSummary = v, fetching = False }, Cmd.none )
 
 
 
@@ -150,26 +217,62 @@ view model =
     { title = "firstcommit"
     , body =
         [ div []
-            [ input [ placeholder "api token", value model.apiToken, onInput InputApiToken ] []
-            , br [] []
-            , input [ placeholder "name", value model.name, onInput InputName ] []
-            , br [] []
-            , input [ placeholder "owner", value model.owner, onInput InputOwner ] []
-            , br [] []
-            , input [ placeholder "qualifiedName", value model.qualifiedName, onInput InputOwner ] []
-            , br [] []
-            , button [ onClick FetchCommitCount ] [ text "🍣" ]
-            ]
-        , div []
-            [ text <| "api token: " ++ model.apiToken
-            , br [] []
-            , text <| "name: " ++ model.name
-            , br [] []
-            , text <| "owner: " ++ model.owner
-            , br [] []
-            , text <| "qualifiedName: " ++ model.qualifiedName
-            , br [] []
-            , text <| String.fromInt model.commitCount
+            [ div []
+                [ input [ placeholder "owner", onInput UpdateOwner, value model.owner ] []
+                , br [] []
+                , input [ placeholder "name", onInput UpdateName, value model.name ] []
+                , br [] []
+                , input [ placeholder "qualifiedName", onInput UpdateQualifiedName, value model.qualifiedName ] []
+                , br [] []
+                , input [ placeholder "apiToken", onInput UpdateApiToken, value model.apiToken ] []
+                ]
+            , div []
+                [ labeledText "owner" model.owner
+                , br [] []
+                , labeledText "name" model.name
+                , br [] []
+                , labeledText "qualifiedName" model.qualifiedName
+                , br [] []
+                , labeledText "apiToken" model.apiToken
+                ]
+            , div []
+                [ button [ onClick SendRequest ] [ text "🍣" ]
+                ]
+            , div []
+                [ text model.errorMessage ]
+            , case model.commitSummary of
+                Just v ->
+                    resultView v
+
+                Nothing ->
+                    case model.fetching of
+                        True ->
+                            div [] [ text "fetching..." ]
+
+                        False ->
+                            div [] []
             ]
         ]
     }
+
+
+labeledText : String -> String -> Html msg
+labeledText label value =
+    text (label ++ ": " ++ value)
+
+
+resultView : CommitSummary -> Html msg
+resultView v =
+    let
+        latestCursor =
+            case List.head v.latestCursor of
+                Just h ->
+                    h
+
+                Nothing ->
+                    "not found"
+    in
+    div []
+        [ div [] [ "totalCount: " ++ String.fromInt v.totalCount |> text ]
+        , div [] [ "cursor: " ++ latestCursor |> text ]
+        ]
