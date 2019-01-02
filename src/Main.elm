@@ -33,15 +33,45 @@ qualifiedName =
 
 
 commitFragment : SelectionSpec Field result vars -> Fragment result vars
-commitFragment historyField =
+commitFragment historySpec =
     fragment "commitFragment"
         (onType "Commit")
-        (extract historyField)
+        (extract historySpec)
 
 
 history : List ( String, Arg.Value vars ) -> ValueSpec NonNull ObjectType result vars -> SelectionSpec Field result vars
 history args inner =
     field "history" args inner
+
+
+type alias RepositorySpec result vars =
+    ValueSpec NonNull ObjectType (Maybe result) vars
+
+
+ref : ValueSpec NonNull ObjectType result { vars | qualifiedName : String } -> ValueSpec NonNull ObjectType result { vars | qualifiedName : String }
+ref targetSpec =
+    extract
+        (field "ref"
+            [ ( "qualifiedName", Arg.variable qualifiedName ) ]
+            targetSpec
+        )
+
+
+repository : ValueSpec NonNull ObjectType result { vars | name : String, owner : String, qualifiedName : String } -> RepositorySpec result { vars | name : String, owner : String, qualifiedName : String }
+repository targetSpec =
+    extract
+        (field "repository"
+            [ ( "owner", Arg.variable owner )
+            , ( "name", Arg.variable name )
+            ]
+            (nullable (ref targetSpec))
+        )
+
+
+queryRequest : RepositorySpec result vars -> vars -> Request Query (Maybe result)
+queryRequest repositorySpec args =
+    queryDocument repositorySpec
+        |> request args
 
 
 type alias CommitSummary =
@@ -86,29 +116,14 @@ commitSummaryRequest model =
                         )
                     )
                 )
-
-        ref : ValueSpec NonNull ObjectType CommitSummary { vars | first : Int, qualifiedName : String }
-        ref =
-            extract
-                (field "ref"
-                    [ ( "qualifiedName", Arg.variable qualifiedName ) ]
-                    target
-                )
     in
-    extract
-        (field "repository"
-            [ ( "owner", Arg.variable owner )
-            , ( "name", Arg.variable name )
-            ]
-            (nullable ref)
-        )
-        |> queryDocument
-        |> request
-            { owner = model.owner
-            , name = model.name
-            , qualifiedName = model.qualifiedName
-            , first = 1
-            }
+    queryRequest
+        (repository target)
+        { name = model.name
+        , owner = model.owner
+        , qualifiedName = model.qualifiedName
+        , first = 1
+        }
 
 
 type alias InitialCommit =
@@ -164,13 +179,6 @@ initialCommitRequest model commitSummary =
                     )
                 )
 
-        ref =
-            extract
-                (field "ref"
-                    [ ( "qualifiedName", Arg.variable qualifiedName ) ]
-                    target
-                )
-
         cursor =
             List.head commitSummary.cursor |> Maybe.withDefault ""
 
@@ -180,21 +188,14 @@ initialCommitRequest model commitSummary =
                 (Just (String.fromInt commitSummary.totalCount))
                 |> Maybe.withDefault ""
     in
-    extract
-        (field "repository"
-            [ ( "owner", Arg.variable owner )
-            , ( "name", Arg.variable name )
-            ]
-            (nullable ref)
-        )
-        |> queryDocument
-        |> request
-            { owner = model.owner
-            , name = model.name
-            , qualifiedName = model.qualifiedName
-            , before = before
-            , last = 1
-            }
+    queryRequest
+        (repository target)
+        { name = model.name
+        , owner = model.owner
+        , qualifiedName = model.qualifiedName
+        , before = before
+        , last = 1
+        }
 
 
 
@@ -235,8 +236,8 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { owner = ""
-      , name = ""
+    ( { owner = "mtwtkman"
+      , name = "editor"
       , qualifiedName = "refs/heads/master"
       , apiToken = ""
       , initialCommit = Nothing
