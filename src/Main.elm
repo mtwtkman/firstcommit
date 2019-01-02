@@ -235,10 +235,10 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { owner = "mtwtkman"
-      , name = "editor"
+    ( { owner = ""
+      , name = ""
       , qualifiedName = "refs/heads/master"
-      , apiToken = "1f92739994c5c3dfc430c6308f4016e7d6a71bf7"
+      , apiToken = ""
       , initialCommit = Nothing
       , fetching = False
       , errorMessage = ""
