@@ -1,12 +1,13 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser as Browser
+import Debug exposing (log)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
 import GraphQL.Request.Builder.Arg as Arg
 import GraphQL.Request.Builder.Variable as Var
-import Html exposing (Html, br, button, div, input, text)
-import Html.Attributes exposing (placeholder, value)
+import Html exposing (Html, a, br, button, div, input, text)
+import Html.Attributes exposing (href, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (header)
 import Task exposing (Task)
@@ -16,8 +17,35 @@ import Task exposing (Task)
 -- GRAPHQL
 
 
+owner : Var.Variable { vars | owner : String }
+owner =
+    Var.required "owner" .owner Var.string
+
+
+name : Var.Variable { vars | name : String }
+name =
+    Var.required "name" .name Var.string
+
+
+qualifiedName : Var.Variable { vars | qualifiedName : String }
+qualifiedName =
+    Var.required "qualifiedName" .qualifiedName Var.string
+
+
+commitFragment : SelectionSpec Field result vars -> Fragment result vars
+commitFragment historyField =
+    fragment "commitFragment"
+        (onType "Commit")
+        (extract historyField)
+
+
+history : List ( String, Arg.Value vars ) -> ValueSpec NonNull ObjectType result vars -> SelectionSpec Field result vars
+history args inner =
+    field "history" args inner
+
+
 type alias CommitSummary =
-    { latestCursor : List String
+    { cursor : List String
     , totalCount : Int
     }
 
@@ -25,44 +53,41 @@ type alias CommitSummary =
 commitSummaryRequest : Model -> Request Query (Maybe CommitSummary)
 commitSummaryRequest model =
     let
-        owner =
-            Var.required "owner" .owner Var.string
-
-        name =
-            Var.required "name" .name Var.string
-
-        qualifiedName =
-            Var.required "qualifiedName" .qualifiedName Var.string
-
         historyFirst =
             Var.required "first" .first Var.int
 
+        totalCount : SelectionSpec Field Int vars
         totalCount =
             field "totalCount" [] int
 
+        edges : SelectionSpec Field (List String) vars
         edges =
             field "edges" [] (list (extract (field "cursor" [] string)))
 
-        history =
-            field "history"
-                [ ( "first", Arg.variable historyFirst ) ]
-                (object CommitSummary
-                    |> with edges
-                    |> with totalCount
-                )
+        historyArgs =
+            [ ( "first", Arg.variable historyFirst ) ]
 
-        commitFragment =
-            fragment "commitFragment"
-                (onType "Commit")
-                (extract history)
+        historyInner : ValueSpec NonNull ObjectType CommitSummary vars
+        historyInner =
+            object CommitSummary
+                |> with edges
+                |> with totalCount
 
+        target : ValueSpec NonNull ObjectType CommitSummary { vars | first : Int }
         target =
             extract
                 (field "target"
                     []
-                    (extract (assume (fragmentSpread commitFragment)))
+                    (extract
+                        (assume
+                            (fragmentSpread
+                                (history historyArgs historyInner |> commitFragment)
+                            )
+                        )
+                    )
                 )
 
+        ref : ValueSpec NonNull ObjectType CommitSummary { vars | first : Int, qualifiedName : String }
         ref =
             extract
                 (field "ref"
@@ -83,6 +108,92 @@ commitSummaryRequest model =
             , name = model.name
             , qualifiedName = model.qualifiedName
             , first = 1
+            }
+
+
+type alias InitialCommit =
+    { commitUrl : String
+    , message : String
+    }
+
+
+initialCommitRequest : Model -> CommitSummary -> Request Query (Maybe (List InitialCommit))
+initialCommitRequest model commitSummary =
+    let
+        historyBefore =
+            Var.required "before" .before Var.string
+
+        historyLast =
+            Var.required "last" .last Var.int
+
+        historyArgs =
+            [ ( "before", Arg.variable historyBefore )
+            , ( "last", Arg.variable historyLast )
+            ]
+
+        commitUrl =
+            field "commitUrl" [] string
+
+        message =
+            field "message" [] string
+
+        node =
+            field "node"
+                []
+                (object InitialCommit
+                    |> with commitUrl
+                    |> with message
+                )
+
+        edges =
+            field "edges" [] (list (extract node))
+
+        historyInner =
+            extract edges
+
+        target =
+            extract
+                (field "target"
+                    []
+                    (extract
+                        (assume
+                            (fragmentSpread
+                                (history historyArgs historyInner |> commitFragment)
+                            )
+                        )
+                    )
+                )
+
+        ref =
+            extract
+                (field "ref"
+                    [ ( "qualifiedName", Arg.variable qualifiedName ) ]
+                    target
+                )
+
+        cursor =
+            List.head commitSummary.cursor |> Maybe.withDefault ""
+
+        before =
+            Maybe.map2 (\a -> \b -> a ++ " " ++ b)
+                (String.split " " cursor |> List.head)
+                (Just (String.fromInt commitSummary.totalCount))
+                |> Maybe.withDefault ""
+    in
+    extract
+        (field "repository"
+            [ ( "owner", Arg.variable owner )
+            , ( "name", Arg.variable name )
+            ]
+            (nullable ref)
+        )
+        |> queryDocument
+        |> request
+            { owner = model.owner
+            , name = model.name
+            , qualifiedName = model.qualifiedName
+            , before = before
+            , last = 1
             }
 
 
@@ -107,12 +218,16 @@ type alias CommitSummaryResponse =
     Result GraphQLClient.Error (Maybe CommitSummary)
 
 
+type alias InitialCommitResponse =
+    Result GraphQLClient.Error (Maybe (List InitialCommit))
+
+
 type alias Model =
     { owner : String
     , name : String
     , qualifiedName : String
     , apiToken : String
-    , commitSummary : Maybe CommitSummary
+    , initialCommit : Maybe InitialCommit
     , fetching : Bool
     , errorMessage : String
     }
@@ -123,8 +238,8 @@ init _ =
     ( { owner = "mtwtkman"
       , name = "editor"
       , qualifiedName = "refs/heads/master"
-      , apiToken = "f4dbcaaf6ebfea54d3a3e229c8f995c7cd0ad850"
-      , commitSummary = Nothing
+      , apiToken = "1f92739994c5c3dfc430c6308f4016e7d6a71bf7"
+      , initialCommit = Nothing
       , fetching = False
       , errorMessage = ""
       }
@@ -141,23 +256,37 @@ type Msg
     | UpdateName String
     | UpdateQualifiedName String
     | UpdateApiToken String
-    | SendRequest
+    | SendCommitSummaryRequest
     | ReceiveCommitSummaryResponse CommitSummaryResponse
+    | ReceiveInitialCommitResponse InitialCommitResponse
+
+
+sendOption : String -> GraphQLClient.RequestOptions
+sendOption apiToken =
+    { method = "POST"
+    , headers =
+        [ header "Authorization" ("Bearer " ++ apiToken)
+        ]
+    , url = "https://api.github.com/graphql"
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 
 sendQueryCommitSummaryRequest : String -> Request Query (Maybe CommitSummary) -> Cmd Msg
 sendQueryCommitSummaryRequest apiToken request =
     GraphQLClient.customSendQuery
-        { method = "POST"
-        , headers =
-            [ header "Authorization" ("Bearer " ++ apiToken)
-            ]
-        , url = "https://api.github.com/graphql"
-        , timeout = Nothing
-        , withCredentials = False
-        }
+        (sendOption apiToken)
         request
         |> Task.attempt ReceiveCommitSummaryResponse
+
+
+sendQueryInitialCommitRequest : String -> Request Query (Maybe (List InitialCommit)) -> Cmd Msg
+sendQueryInitialCommitRequest apiToken request =
+    GraphQLClient.customSendQuery
+        (sendOption apiToken)
+        request
+        |> Task.attempt ReceiveInitialCommitResponse
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -175,7 +304,7 @@ update msg model =
         UpdateApiToken value ->
             ( { model | apiToken = value }, Cmd.none )
 
-        SendRequest ->
+        SendCommitSummaryRequest ->
             let
                 errorMessage =
                     if
@@ -196,16 +325,22 @@ update msg model =
             )
 
         ReceiveCommitSummaryResponse response ->
-            let
-                v =
-                    case Result.toMaybe response of
-                        Just resp ->
-                            resp
+            ( model
+            , case Result.withDefault Nothing response of
+                Just data ->
+                    sendQueryInitialCommitRequest model.apiToken (initialCommitRequest model data)
 
-                        Nothing ->
-                            Nothing
-            in
-            ( { model | commitSummary = v, fetching = False }, Cmd.none )
+                Nothing ->
+                    Cmd.none
+            )
+
+        ReceiveInitialCommitResponse response ->
+            ( { model
+                | initialCommit = Result.withDefault Nothing response |> Maybe.map List.head |> Maybe.withDefault Nothing
+                , fetching = False
+              }
+            , Cmd.none
+            )
 
 
 
@@ -236,21 +371,21 @@ view model =
                 , labeledText "apiToken" model.apiToken
                 ]
             , div []
-                [ button [ onClick SendRequest ] [ text "🍣" ]
+                [ button [ onClick SendCommitSummaryRequest ] [ text "get first commit" ]
                 ]
             , div []
                 [ text model.errorMessage ]
-            , case model.commitSummary of
-                Just v ->
-                    resultView v
+            , case model.fetching of
+                True ->
+                    div [] [ text "fetching..." ]
 
-                Nothing ->
-                    case model.fetching of
-                        True ->
-                            div [] [ text "fetching..." ]
+                False ->
+                    case model.initialCommit of
+                        Just v ->
+                            resultView v
 
-                        False ->
-                            div [] []
+                        Nothing ->
+                            div [] [ text "not found" ]
             ]
         ]
     }
@@ -261,18 +396,12 @@ labeledText label value =
     text (label ++ ": " ++ value)
 
 
-resultView : CommitSummary -> Html msg
+resultView : InitialCommit -> Html msg
 resultView v =
-    let
-        latestCursor =
-            case List.head v.latestCursor of
-                Just h ->
-                    h
-
-                Nothing ->
-                    "not found"
-    in
     div []
-        [ div [] [ "totalCount: " ++ String.fromInt v.totalCount |> text ]
-        , div [] [ "cursor: " ++ latestCursor |> text ]
+        [ div []
+            [ a [ href v.commitUrl ]
+                [ "commitUrl: " ++ v.commitUrl |> text ]
+            ]
+        , div [] [ "message: " ++ v.message |> text ]
         ]

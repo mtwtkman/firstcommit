@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "elm-live src/Main.elm --port 55301"
+    "start": "elm-live src/Main.elm --port 55301 --start-page index.dev.html -- --output=index.dev.html --debug",
+    "build": "elm make src/Main.elm --output=index.html --optimize"
   },
   "author": "",
   "license": "ISC",
