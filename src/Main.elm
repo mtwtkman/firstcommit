@@ -40,8 +40,8 @@ type alias InitialCommitResponse =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { owner = "mtwtkman"
-      , name = "editor"
+    ( { owner = ""
+      , name = ""
       , qualifiedName = "refs/heads/master"
       , apiToken = ""
       , initialCommit = Nothing
