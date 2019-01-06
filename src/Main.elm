@@ -1,178 +1,16 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+module Main exposing (Msg(..), init, main, update, view)
 
 import Browser as Browser
 import Debug exposing (log)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
-import GraphQL.Request.Builder.Arg as Arg
-import GraphQL.Request.Builder.Variable as Var
 import Html exposing (Html, a, br, button, div, input, text)
 import Html.Attributes exposing (href, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (header)
-import Query.Var exposing (..)
+import Query.Request exposing (..)
 import Task exposing (Task)
-
-
-
--- GRAPHQL
-
-
-commitFragment : SelectionSpec Field result vars -> Fragment result vars
-commitFragment historySpec =
-    fragment "commitFragment"
-        (onType "Commit")
-        (extract historySpec)
-
-
-history : List ( String, Arg.Value vars ) -> ValueSpec NonNull ObjectType result vars -> SelectionSpec Field result vars
-history args inner =
-    field "history" args inner
-
-
-type alias RepositorySpec result vars =
-    ValueSpec NonNull ObjectType (Maybe result) vars
-
-
-ref : ValueSpec NonNull ObjectType result { vars | qualifiedName : String } -> ValueSpec NonNull ObjectType result { vars | qualifiedName : String }
-ref targetSpec =
-    extract
-        (field "ref"
-            [ ( "qualifiedName", Arg.variable qualifiedNameVar ) ]
-            targetSpec
-        )
-
-
-repository : ValueSpec NonNull ObjectType result { vars | name : String, owner : String, qualifiedName : String } -> RepositorySpec result { vars | name : String, owner : String, qualifiedName : String }
-repository targetSpec =
-    extract
-        (field "repository"
-            [ ( "owner", Arg.variable ownerVar )
-            , ( "name", Arg.variable nameVar )
-            ]
-            (nullable (ref targetSpec))
-        )
-
-
-queryRequest : RepositorySpec result vars -> vars -> Request Query (Maybe result)
-queryRequest repositorySpec args =
-    queryDocument repositorySpec
-        |> request args
-
-
-type alias CommitSummary =
-    { cursor : List String
-    , totalCount : Int
-    }
-
-
-commitSummaryRequest : Model -> Request Query (Maybe CommitSummary)
-commitSummaryRequest model =
-    let
-        totalCount : SelectionSpec Field Int vars
-        totalCount =
-            field "totalCount" [] int
-
-        edges : SelectionSpec Field (List String) vars
-        edges =
-            field "edges" [] (list (extract (field "cursor" [] string)))
-
-        historyArgs =
-            [ ( "first", Arg.variable firstVar ) ]
-
-        historyInner : ValueSpec NonNull ObjectType CommitSummary vars
-        historyInner =
-            object CommitSummary
-                |> with edges
-                |> with totalCount
-
-        target : ValueSpec NonNull ObjectType CommitSummary { vars | first : Int }
-        target =
-            extract
-                (field "target"
-                    []
-                    (extract
-                        (assume
-                            (fragmentSpread
-                                (history historyArgs historyInner |> commitFragment)
-                            )
-                        )
-                    )
-                )
-    in
-    queryRequest
-        (repository target)
-        { name = model.name
-        , owner = model.owner
-        , qualifiedName = model.qualifiedName
-        , first = 1
-        }
-
-
-type alias InitialCommit =
-    { commitUrl : String
-    , message : String
-    }
-
-
-initialCommitRequest : Model -> CommitSummary -> Request Query (Maybe (List InitialCommit))
-initialCommitRequest model commitSummary =
-    let
-        historyArgs =
-            [ ( "before", Arg.variable beforeVar )
-            , ( "last", Arg.variable lastVar )
-            ]
-
-        commitUrl =
-            field "commitUrl" [] string
-
-        message =
-            field "message" [] string
-
-        node =
-            field "node"
-                []
-                (object InitialCommit
-                    |> with commitUrl
-                    |> with message
-                )
-
-        edges =
-            field "edges" [] (list (extract node))
-
-        historyInner =
-            extract edges
-
-        target =
-            extract
-                (field "target"
-                    []
-                    (extract
-                        (assume
-                            (fragmentSpread
-                                (history historyArgs historyInner |> commitFragment)
-                            )
-                        )
-                    )
-                )
-
-        cursor =
-            List.head commitSummary.cursor |> Maybe.withDefault ""
-
-        before =
-            Maybe.map2 (\a -> \b -> a ++ " " ++ b)
-                (String.split " " cursor |> List.head)
-                (Just (String.fromInt commitSummary.totalCount))
-                |> Maybe.withDefault ""
-    in
-    queryRequest
-        (repository target)
-        { name = model.name
-        , owner = model.owner
-        , qualifiedName = model.qualifiedName
-        , before = before
-        , last = 1
-        }
+import Type exposing (..)
 
 
 
@@ -198,17 +36,6 @@ type alias CommitSummaryResponse =
 
 type alias InitialCommitResponse =
     Result GraphQLClient.Error (Maybe (List InitialCommit))
-
-
-type alias Model =
-    { owner : String
-    , name : String
-    , qualifiedName : String
-    , apiToken : String
-    , initialCommit : Maybe InitialCommit
-    , fetching : Bool
-    , errorMessage : String
-    }
 
 
 init : () -> ( Model, Cmd Msg )
