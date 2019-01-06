@@ -10,26 +10,12 @@ import Html exposing (Html, a, br, button, div, input, text)
 import Html.Attributes exposing (href, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import Http exposing (header)
+import Query.Var exposing (..)
 import Task exposing (Task)
 
 
 
 -- GRAPHQL
-
-
-owner : Var.Variable { vars | owner : String }
-owner =
-    Var.required "owner" .owner Var.string
-
-
-name : Var.Variable { vars | name : String }
-name =
-    Var.required "name" .name Var.string
-
-
-qualifiedName : Var.Variable { vars | qualifiedName : String }
-qualifiedName =
-    Var.required "qualifiedName" .qualifiedName Var.string
 
 
 commitFragment : SelectionSpec Field result vars -> Fragment result vars
@@ -52,7 +38,7 @@ ref : ValueSpec NonNull ObjectType result { vars | qualifiedName : String } -> V
 ref targetSpec =
     extract
         (field "ref"
-            [ ( "qualifiedName", Arg.variable qualifiedName ) ]
+            [ ( "qualifiedName", Arg.variable qualifiedNameVar ) ]
             targetSpec
         )
 
@@ -61,8 +47,8 @@ repository : ValueSpec NonNull ObjectType result { vars | name : String, owner :
 repository targetSpec =
     extract
         (field "repository"
-            [ ( "owner", Arg.variable owner )
-            , ( "name", Arg.variable name )
+            [ ( "owner", Arg.variable ownerVar )
+            , ( "name", Arg.variable nameVar )
             ]
             (nullable (ref targetSpec))
         )
@@ -83,9 +69,6 @@ type alias CommitSummary =
 commitSummaryRequest : Model -> Request Query (Maybe CommitSummary)
 commitSummaryRequest model =
     let
-        historyFirst =
-            Var.required "first" .first Var.int
-
         totalCount : SelectionSpec Field Int vars
         totalCount =
             field "totalCount" [] int
@@ -95,7 +78,7 @@ commitSummaryRequest model =
             field "edges" [] (list (extract (field "cursor" [] string)))
 
         historyArgs =
-            [ ( "first", Arg.variable historyFirst ) ]
+            [ ( "first", Arg.variable firstVar ) ]
 
         historyInner : ValueSpec NonNull ObjectType CommitSummary vars
         historyInner =
@@ -135,15 +118,9 @@ type alias InitialCommit =
 initialCommitRequest : Model -> CommitSummary -> Request Query (Maybe (List InitialCommit))
 initialCommitRequest model commitSummary =
     let
-        historyBefore =
-            Var.required "before" .before Var.string
-
-        historyLast =
-            Var.required "last" .last Var.int
-
         historyArgs =
-            [ ( "before", Arg.variable historyBefore )
-            , ( "last", Arg.variable historyLast )
+            [ ( "before", Arg.variable beforeVar )
+            , ( "last", Arg.variable lastVar )
             ]
 
         commitUrl =
