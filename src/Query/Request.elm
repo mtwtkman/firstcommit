@@ -40,8 +40,8 @@ buildRequest args inner =
         )
 
 
-commitSummaryRequest : Model -> Request Query (Maybe CommitSummary)
-commitSummaryRequest model =
+commitSummaryRequest : String -> String -> String -> Request Query (Maybe CommitSummary)
+commitSummaryRequest owner name qualifiedName =
     buildRequest
         [ ( "first", Arg.variable firstVar ) ]
         (object CommitSummary
@@ -50,15 +50,15 @@ commitSummaryRequest model =
         )
         |> queryDocument
         |> request
-            { owner = model.owner
-            , name = model.name
-            , qualifiedName = model.qualifiedName
+            { owner = owner
+            , name = name
+            , qualifiedName = qualifiedName
             , first = 1
             }
 
 
-initialCommitRequest : Model -> CommitSummary -> Request Query (Maybe (List InitialCommit))
-initialCommitRequest model commitSummary =
+initialCommitRequest : String -> String -> String -> CommitSummary -> Request Query (Maybe (List InitialCommit))
+initialCommitRequest owner name qualifiedName commitSummary =
     let
         before =
             Maybe.map2 (\a -> \b -> a ++ " " ++ b)
@@ -88,9 +88,9 @@ initialCommitRequest model commitSummary =
         )
         |> queryDocument
         |> request
-            { name = model.name
-            , owner = model.owner
-            , qualifiedName = model.qualifiedName
+            { owner = owner
+            , name = name
+            , qualifiedName = qualifiedName
             , before = before
             , last = 1
             }

@@ -1,4 +1,4 @@
-module Type exposing (CommitSummary, InitialCommit, Model)
+module Type exposing (CommitSummary, Fetching(..), Form, InitialCommit, Model)
 
 
 type alias CommitSummary =
@@ -14,11 +14,23 @@ type alias InitialCommit =
 
 
 type alias Model =
-    { owner : String
-    , name : String
-    , qualifiedName : String
-    , apiToken : String
+    { form : Form
+    , fetching : Fetching
+    , sendable : Bool
     , initialCommit : Maybe InitialCommit
-    , fetching : Bool
-    , errorMessage : String
+    }
+
+
+type Fetching
+    = NotFetching
+    | FetchingInitialCommit
+    | FetchingCommitSummary
+    | Done
+
+
+type alias Form =
+    { owner : Maybe String
+    , name : Maybe String
+    , qualifiedName : Maybe String
+    , apiToken : Maybe String
     }
