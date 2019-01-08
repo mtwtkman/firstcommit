@@ -4,11 +4,12 @@ import Browser as Browser
 import Bulma.CDN exposing (stylesheet)
 import Bulma.Columns exposing (column, columnModifiers)
 import Bulma.Elements exposing (button, buttonModifiers)
+import Bulma.Form exposing (controlInput, controlInputModifiers, field)
 import Bulma.Layout exposing (container)
-import Bulma.Modifiers exposing (Color(..))
+import Bulma.Modifiers exposing (Color(..), Size(..), Width(..))
 import Helper exposing (unwrap)
 import Html exposing (Html, a, div, input, text)
-import Html.Attributes exposing (disabled, href, placeholder, value)
+import Html.Attributes exposing (class, href, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import Msg exposing (..)
 import Type exposing (..)
@@ -22,7 +23,7 @@ view model =
             [ stylesheet
             , column
                 columnModifiers
-                []
+                [ class "is-half is-offset-one-quarter" ]
                 [ inputRegion model
                 , previewRegion model
                 , getFirstCommitButton model.sendable
@@ -50,8 +51,8 @@ getFirstCommitButton : Bool -> Html Msg
 getFirstCommitButton sendable =
     button
         { buttonModifiers
-            | disabled = sendable
-            , color = Primary
+            | color = Link
+            , disabled = not sendable
         }
         [ onClick SendCommitSummaryRequest
         ]
@@ -70,9 +71,7 @@ inputRegion model =
             in
             Maybe.andThen f qualifiedName
     in
-    column
-        columnModifiers
-        []
+    div []
         [ requiredInput "owner" UpdateOwner model.form.owner
         , requiredInput "name" UpdateName model.form.name
         , requiredInput "branch" UpdateBranch (toBranch model.form.qualifiedName)
@@ -82,20 +81,25 @@ inputRegion model =
 
 requiredInput : String -> (String -> msg) -> Maybe String -> Html msg
 requiredInput ph msg val =
-    div []
-        [ input
+    let
+        color =
+            case val of
+                Just _ ->
+                    "is-primary"
+
+                Nothing ->
+                    "is-danger"
+    in
+    field []
+        [ controlInput
+            controlInputModifiers
+            []
             [ onInput msg
             , placeholder ph
             , value (unwrap val)
+            , class color
             ]
             []
-        , text <|
-            case val of
-                Just _ ->
-                    ""
-
-                Nothing ->
-                    "required"
         ]
 
 
