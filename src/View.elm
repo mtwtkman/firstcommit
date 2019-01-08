@@ -115,6 +115,5 @@ previewRegion model =
 resultView : InitialCommit -> Html msg
 resultView v =
     div []
-        [ a [ href v.commitUrl ] [ text "commitUrl" ]
-        , text ("message: " ++ v.message)
+        [ a [ href v.commitUrl ] [ text v.message ]
         ]

@@ -794,11 +794,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ae.M === region.ao.M)
+	if (region.aF.O === region.aU.O)
 	{
-		return 'on line ' + region.ae.M;
+		return 'on line ' + region.aF.O;
 	}
-	return 'on lines ' + region.ae.M + ' through ' + region.ao.M;
+	return 'on lines ' + region.aF.O + ' through ' + region.aU.O;
 }
 
 
@@ -1867,9 +1867,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a1,
-		impl.bf,
-		impl.bb,
+		impl.bE,
+		impl.bS,
+		impl.bO,
 		function() { return function() {} }
 	);
 });
@@ -2341,21 +2341,21 @@ var _Http_toTask = F2(function(request, maybeProgress)
 			callback(_Scheduler_fail(elm$http$Http$Timeout));
 		});
 		xhr.addEventListener('load', function() {
-			callback(_Http_handleResponse(xhr, request._.a));
+			callback(_Http_handleResponse(xhr, request.al.a));
 		});
 
 		try
 		{
-			xhr.open(request.a5, request.bg, true);
+			xhr.open(request.bI, request.bT, true);
 		}
 		catch (e)
 		{
-			return callback(_Scheduler_fail(elm$http$Http$BadUrl(request.bg)));
+			return callback(_Scheduler_fail(elm$http$Http$BadUrl(request.bT)));
 		}
 
 		_Http_configureRequest(xhr, request);
 
-		var body = request.aO;
+		var body = request.bk;
 		xhr.send(elm$http$Http$Internal$isStringBody(body)
 			? (xhr.setRequestHeader('Content-Type', body.a), body.b)
 			: body.a
@@ -2378,23 +2378,23 @@ function _Http_configureProgress(xhr, maybeProgress)
 			return;
 		}
 		_Scheduler_rawSpawn(maybeProgress.a({
-			aP: event.loaded,
-			aQ: event.total
+			bl: event.loaded,
+			bm: event.total
 		}));
 	});
 }
 
 function _Http_configureRequest(xhr, request)
 {
-	for (var headers = request.a_; headers.b; headers = headers.b) // WHILE_CONS
+	for (var headers = request.bB; headers.b; headers = headers.b) // WHILE_CONS
 	{
 		xhr.setRequestHeader(headers.a.a, headers.a.b);
 	}
 
-	xhr.responseType = request._.b;
-	xhr.withCredentials = request.bj;
+	xhr.responseType = request.al.b;
+	xhr.withCredentials = request.bW;
 
-	elm$core$Maybe$isJust(request.bc) && (xhr.timeout = request.bc.a);
+	elm$core$Maybe$isJust(request.bP) && (xhr.timeout = request.bP.a);
 }
 
 
@@ -2426,10 +2426,10 @@ function _Http_handleResponse(xhr, responseToResult)
 function _Http_toResponse(xhr)
 {
 	return {
-		bg: xhr.responseURL,
-		ba: { aS: xhr.status, a4: xhr.statusText },
-		a_: _Http_parseHeaders(xhr.getAllResponseHeaders()),
-		aO: xhr.response
+		bT: xhr.responseURL,
+		bN: { bo: xhr.status, bH: xhr.statusText },
+		bB: _Http_parseHeaders(xhr.getAllResponseHeaders()),
+		bk: xhr.response
 	};
 }
 
@@ -2868,9 +2868,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		a4: func(record.a4),
-		af: record.af,
-		ac: record.ac
+		bH: func(record.bH),
+		aH: record.aH,
+		aB: record.aB
 	}
 });
 
@@ -3138,11 +3138,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.a4;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.af;
+		var message = !tag ? value : tag < 3 ? value.a : value.bH;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aH;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.ac) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.aB) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -4092,11 +4092,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a1,
-		impl.bf,
-		impl.bb,
+		impl.bE,
+		impl.bS,
+		impl.bO,
 		function(sendToApp, initialModel) {
-			var view = impl.bi;
+			var view = impl.bV;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -4128,12 +4128,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.a1,
-		impl.bf,
-		impl.bb,
+		impl.bE,
+		impl.bS,
+		impl.bO,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.N && impl.N(sendToApp)
-			var view = impl.bi;
+			var divertHrefToApp = impl.S && impl.S(sendToApp)
+			var view = impl.bV;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -4141,12 +4141,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aO);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bk);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.bd) && (_VirtualDom_doc.title = title = doc.bd);
+				(title !== doc.bQ) && (_VirtualDom_doc.title = title = doc.bQ);
 			});
 		}
 	);
@@ -4202,12 +4202,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.a6;
-	var onUrlRequest = impl.a7;
+	var onUrlChange = impl.bJ;
+	var onUrlRequest = impl.bK;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		N: function(sendToApp)
+		S: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4223,9 +4223,9 @@ function _Browser_application(impl)
 					var next = elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.aA === next.aA
-							&& curr.ar === next.ar
-							&& curr.ax.a === next.ax.a
+							&& curr.a6 === next.a6
+							&& curr.aX === next.aX
+							&& curr.a3.a === next.a3.a
 						)
 							? elm$browser$Browser$Internal(next)
 							: elm$browser$Browser$External(href)
@@ -4233,13 +4233,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		a1: function(flags)
+		bE: function(flags)
 		{
-			return A3(impl.a1, flags, _Browser_getUrl(), key);
+			return A3(impl.bE, flags, _Browser_getUrl(), key);
 		},
-		bi: impl.bi,
-		bf: impl.bf,
-		bb: impl.bb
+		bV: impl.bV,
+		bS: impl.bS,
+		bO: impl.bO
 	});
 }
 
@@ -4305,17 +4305,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { a$: 'hidden', aR: 'visibilitychange' }
+		? { bC: 'hidden', bn: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { a$: 'mozHidden', aR: 'mozvisibilitychange' }
+		? { bC: 'mozHidden', bn: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { a$: 'msHidden', aR: 'msvisibilitychange' }
+		? { bC: 'msHidden', bn: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { a$: 'webkitHidden', aR: 'webkitvisibilitychange' }
-		: { a$: 'hidden', aR: 'visibilitychange' };
+		? { bC: 'webkitHidden', bn: 'webkitvisibilitychange' }
+		: { bC: 'hidden', bn: 'visibilitychange' };
 }
 
 
@@ -4396,12 +4396,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		aF: _Browser_getScene(),
-		aK: {
-			X: _Browser_window.pageXOffset,
-			Y: _Browser_window.pageYOffset,
+		bb: _Browser_getScene(),
+		bg: {
+			ad: _Browser_window.pageXOffset,
+			ae: _Browser_window.pageYOffset,
 			K: _Browser_doc.documentElement.clientWidth,
-			D: _Browser_doc.documentElement.clientHeight
+			A: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4412,7 +4412,7 @@ function _Browser_getScene()
 	var elem = _Browser_doc.documentElement;
 	return {
 		K: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		D: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		A: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4435,15 +4435,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			aF: {
+			bb: {
 				K: node.scrollWidth,
-				D: node.scrollHeight
+				A: node.scrollHeight
 			},
-			aK: {
-				X: node.scrollLeft,
-				Y: node.scrollTop,
+			bg: {
+				ad: node.scrollLeft,
+				ae: node.scrollTop,
 				K: node.clientWidth,
-				D: node.clientHeight
+				A: node.clientHeight
 			}
 		};
 	});
@@ -4473,18 +4473,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			aF: _Browser_getScene(),
-			aK: {
-				X: x,
-				Y: y,
+			bb: _Browser_getScene(),
+			bg: {
+				ad: x,
+				ae: y,
 				K: _Browser_doc.documentElement.clientWidth,
-				D: _Browser_doc.documentElement.clientHeight
+				A: _Browser_doc.documentElement.clientHeight
 			},
-			aW: {
-				X: x + rect.left,
-				Y: y + rect.top,
+			bv: {
+				ad: x + rect.left,
+				ae: y + rect.top,
 				K: rect.width,
-				D: rect.height
+				A: rect.height
 			}
 		};
 	});
@@ -4721,25 +4721,25 @@ var elm$core$Basics$sub = _Basics_sub;
 var elm$core$Elm$JsArray$length = _JsArray_length;
 var elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.b) {
+		if (!builder.a) {
 			return A4(
 				elm$core$Array$Array_elm_builtin,
-				elm$core$Elm$JsArray$length(builder.d),
+				elm$core$Elm$JsArray$length(builder.c),
 				elm$core$Array$shiftStep,
 				elm$core$Elm$JsArray$empty,
-				builder.d);
+				builder.c);
 		} else {
-			var treeLen = builder.b * elm$core$Array$branchFactor;
+			var treeLen = builder.a * elm$core$Array$branchFactor;
 			var depth = elm$core$Basics$floor(
 				A2(elm$core$Basics$logBase, elm$core$Array$branchFactor, treeLen - 1));
 			var correctNodeList = reverseNodeList ? elm$core$List$reverse(builder.e) : builder.e;
-			var tree = A2(elm$core$Array$treeFromBuilder, correctNodeList, builder.b);
+			var tree = A2(elm$core$Array$treeFromBuilder, correctNodeList, builder.a);
 			return A4(
 				elm$core$Array$Array_elm_builtin,
-				elm$core$Elm$JsArray$length(builder.d) + treeLen,
+				elm$core$Elm$JsArray$length(builder.c) + treeLen,
 				A2(elm$core$Basics$max, 5, depth * elm$core$Array$shiftStep),
 				tree,
-				builder.d);
+				builder.c);
 		}
 	});
 var elm$core$Basics$idiv = _Basics_idiv;
@@ -4753,7 +4753,7 @@ var elm$core$Array$initializeHelp = F5(
 				return A2(
 					elm$core$Array$builderToArray,
 					false,
-					{e: nodeList, b: (len / elm$core$Array$branchFactor) | 0, d: tail});
+					{e: nodeList, a: (len / elm$core$Array$branchFactor) | 0, c: tail});
 			} else {
 				var leaf = elm$core$Array$Leaf(
 					A3(elm$core$Elm$JsArray$initialize, elm$core$Array$branchFactor, fromIndex, fn));
@@ -4999,13 +4999,13 @@ var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Main$init = function (_n0) {
 	var form = {
-		s: elm$core$Maybe$Nothing,
-		v: elm$core$Maybe$Nothing,
-		w: elm$core$Maybe$Nothing,
-		y: elm$core$Maybe$Just('refs/heads/master')
+		M: elm$core$Maybe$Nothing,
+		P: elm$core$Maybe$Nothing,
+		Q: elm$core$Maybe$Nothing,
+		R: elm$core$Maybe$Just('refs/heads/master')
 	};
 	return _Utils_Tuple2(
-		{C: 0, a: form, U: elm$core$Maybe$Nothing, z: false},
+		{N: 0, d: form, as: elm$core$Maybe$Nothing, H: false},
 		elm$core$Platform$Cmd$none);
 };
 var elm$core$String$isEmpty = function (string) {
@@ -5033,9 +5033,6 @@ var elm$core$Maybe$withDefault = F2(
 var author$project$Helper$unwrap = function (src) {
 	return A2(elm$core$Maybe$withDefault, '', src);
 };
-var author$project$Main$ReceiveCommitSummaryResponse = function (a) {
-	return {$: 5, a: a};
-};
 var elm$http$Http$Internal$Header = F2(
 	function (a, b) {
 		return {$: 0, a: a, b: b};
@@ -5043,15 +5040,18 @@ var elm$http$Http$Internal$Header = F2(
 var elm$http$Http$header = elm$http$Http$Internal$Header;
 var author$project$Main$sendOption = function (apiToken) {
 	return {
-		a_: _List_fromArray(
+		bB: _List_fromArray(
 			[
 				A2(elm$http$Http$header, 'Authorization', 'Bearer ' + apiToken)
 			]),
-		a5: 'POST',
-		bc: elm$core$Maybe$Nothing,
-		bg: 'https://api.github.com/graphql',
-		bj: false
+		bI: 'POST',
+		bP: elm$core$Maybe$Nothing,
+		bT: 'https://api.github.com/graphql',
+		bW: false
 	};
+};
+var author$project$Msg$ReceiveCommitSummaryResponse = function (a) {
+	return {$: 5, a: a};
 };
 var elm$core$Basics$composeL = F3(
 	function (g, f, x) {
@@ -5811,12 +5811,12 @@ var elm$json$Json$Decode$string = _Json_decodeString;
 var elm$json$Json$Decode$succeed = _Json_succeed;
 var jamesmacaulay$elm_graphql$GraphQL$Response$RequestError = F2(
 	function (message, locations) {
-		return {a3: locations, a4: message};
+		return {bG: locations, bH: message};
 	});
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var jamesmacaulay$elm_graphql$GraphQL$Response$DocumentLocation = F2(
 	function (line, column) {
-		return {aT: column, M: line};
+		return {bq: column, O: line};
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Response$documentLocationDecoder = A3(
 	elm$json$Json$Decode$map2,
@@ -5851,10 +5851,10 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$convertHttpError = F3(
 		};
 		switch (httpError.$) {
 			case 3:
-				var body = httpError.a.aO;
+				var body = httpError.a.bk;
 				return handleErrorWithResponseBody(body);
 			case 4:
-				var body = httpError.b.aO;
+				var body = httpError.b.bk;
 				return handleErrorWithResponseBody(body);
 			default:
 				return wrapHttpError(httpError);
@@ -5946,14 +5946,14 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$postBody = F2(
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$requestConfig = F4(
 	function (requestOptions, documentString, expect, variableValues) {
-		var _n0 = (requestOptions.a5 === 'GET') ? _Utils_Tuple2(
-			A3(jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$parameterizedUrl, requestOptions.bg, documentString, variableValues),
+		var _n0 = (requestOptions.bI === 'GET') ? _Utils_Tuple2(
+			A3(jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$parameterizedUrl, requestOptions.bT, documentString, variableValues),
 			elm$http$Http$emptyBody) : _Utils_Tuple2(
-			requestOptions.bg,
+			requestOptions.bT,
 			A2(jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$postBody, documentString, variableValues));
 		var url = _n0.a;
 		var body = _n0.b;
-		return {aO: body, _: expect, a_: requestOptions.a_, a5: requestOptions.a5, bc: requestOptions.bc, bg: url, bj: requestOptions.bj};
+		return {bk: body, al: expect, bB: requestOptions.bB, bI: requestOptions.bI, bP: requestOptions.bP, bT: url, bW: requestOptions.bW};
 	});
 var elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
@@ -6025,12 +6025,12 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableValuesToJson = fun
 				kvPairs)));
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$jsonVariableValues = function (_n0) {
-	var variableValues = _n0.aJ;
+	var variableValues = _n0.bf;
 	return jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableValuesToJson(variableValues);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$requestBody = function (_n0) {
 	var requestRecord = _n0;
-	return requestRecord.an;
+	return requestRecord.aT;
 };
 var jamesmacaulay$elm_graphql$GraphQL$Client$Http$sendExpecting = F3(
 	function (expect, requestOptions, request) {
@@ -6047,7 +6047,7 @@ var elm$http$Http$expectStringResponse = _Http_expectStringResponse;
 var elm$http$Http$expectJson = function (decoder) {
 	return elm$http$Http$expectStringResponse(
 		function (response) {
-			var _n0 = A2(elm$json$Json$Decode$decodeString, decoder, response.aO);
+			var _n0 = A2(elm$json$Json$Decode$decodeString, decoder, response.bk);
 			if (_n0.$ === 1) {
 				var decodeError = _n0.a;
 				return elm$core$Result$Err(
@@ -6064,7 +6064,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$defaultExpect = A2(
 	elm$json$Json$Decode$field('data'));
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$responseDataDecoder = function (_n0) {
 	var requestRecord = _n0;
-	return requestRecord.aE;
+	return requestRecord.ba;
 };
 var jamesmacaulay$elm_graphql$GraphQL$Client$Http$send = F2(
 	function (options, request) {
@@ -6077,20 +6077,20 @@ var author$project$Main$sendQueryCommitSummaryRequest = F2(
 	function (apiToken, request) {
 		return A2(
 			elm$core$Task$attempt,
-			author$project$Main$ReceiveCommitSummaryResponse,
+			author$project$Msg$ReceiveCommitSummaryResponse,
 			A2(
 				jamesmacaulay$elm_graphql$GraphQL$Client$Http$customSendQuery,
 				author$project$Main$sendOption(apiToken),
 				request));
 	});
-var author$project$Main$ReceiveInitialCommitResponse = function (a) {
+var author$project$Msg$ReceiveInitialCommitResponse = function (a) {
 	return {$: 6, a: a};
 };
 var author$project$Main$sendQueryInitialCommitRequest = F2(
 	function (apiToken, request) {
 		return A2(
 			elm$core$Task$attempt,
-			author$project$Main$ReceiveInitialCommitResponse,
+			author$project$Msg$ReceiveInitialCommitResponse,
 			A2(
 				jamesmacaulay$elm_graphql$GraphQL$Client$Http$customSendQuery,
 				author$project$Main$sendOption(apiToken),
@@ -6141,21 +6141,21 @@ var author$project$Query$Var$nameVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'name',
 	function ($) {
-		return $.v;
+		return $.P;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$string);
 var author$project$Query$Var$ownerVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'owner',
 	function ($) {
-		return $.w;
+		return $.Q;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$string);
 var author$project$Query$Var$qualifiedNameVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'qualifiedName',
 	function ($) {
-		return $.y;
+		return $.R;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$string);
 var elm$json$Json$Decode$andThen = _Json_andThen;
@@ -6202,9 +6202,9 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec = F4(
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$NonNullFlag = 1;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag = 1;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Util$responseKey = function (fieldInfo) {
-	var _n0 = fieldInfo.ah;
+	var _n0 = fieldInfo.aO;
 	if (_n0.$ === 1) {
-		return fieldInfo.v;
+		return fieldInfo.P;
 	} else {
 		var alias = _n0.a;
 		return alias;
@@ -6233,9 +6233,9 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$extract = function (_n0) {
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec,
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedType(
 			{
-				k: 0,
-				p: elm$core$Basics$always,
-				E: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag,
+				l: 0,
+				r: elm$core$Basics$always,
+				C: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag,
 				f: _List_fromArray(
 					[selectionAST])
 			}),
@@ -6304,15 +6304,15 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$toDefinitionAST =
 	if (!_var.$) {
 		var variableName = _var.a;
 		var typeRef = _var.b;
-		return {am: elm$core$Maybe$Nothing, v: variableName, aI: typeRef};
+		return {aS: elm$core$Maybe$Nothing, P: variableName, be: typeRef};
 	} else {
 		var variableName = _var.a;
 		var typeRef = _var.b;
 		var defaultValue = _var.d;
 		return {
-			am: elm$core$Maybe$Just(defaultValue),
-			v: variableName,
-			aI: typeRef
+			aS: elm$core$Maybe$Just(defaultValue),
+			P: variableName,
+			be: typeRef
 		};
 	}
 };
@@ -6359,10 +6359,10 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$field = F3(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$varsFromArguments(_arguments),
 			fieldVars);
 		var astFieldInfo = {
-			ah: elm$core$Maybe$Nothing,
-			ai: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
+			aO: elm$core$Maybe$Nothing,
+			aP: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
 			g: _List_Nil,
-			v: name,
+			P: name,
 			f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSourceType(sourceType)
 		};
 		return A4(
@@ -6375,7 +6375,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$field = F3(
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Fragment = elm$core$Basics$identity;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$fragment = F3(
 	function (name, typeCondition, spec) {
-		return {g: _List_Nil, v: name, j: spec, W: typeCondition};
+		return {g: _List_Nil, P: name, k: spec, aa: typeCondition};
 	});
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$maybe = function (decoder) {
@@ -6391,8 +6391,8 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$directiveAST = function (_
 	var name = _n0.a;
 	var _arguments = _n0.b;
 	return {
-		ai: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
-		v: name
+		aP: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
+		P: name
 	};
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSpec = function (_n0) {
@@ -6400,15 +6400,15 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSpec = fun
 	return jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSourceType(sourceType);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$fragmentAST = function (_n0) {
-	var name = _n0.v;
-	var typeCondition = _n0.W;
+	var name = _n0.P;
+	var typeCondition = _n0.aa;
 	var directives = _n0.g;
-	var spec = _n0.j;
+	var spec = _n0.k;
 	return {
 		g: A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$directiveAST, directives),
-		v: name,
+		P: name,
 		f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSpec(spec),
-		W: typeCondition
+		aa: typeCondition
 	};
 };
 var elm$core$List$append = F2(
@@ -6431,7 +6431,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$varsFromDirectives = elm$c
 	A2(elm$core$Basics$composeR, elm$core$Tuple$second, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$varsFromArguments));
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$fragmentVariables = function (_n0) {
 	var directives = _n0.g;
-	var spec = _n0.j;
+	var spec = _n0.k;
 	var directiveVariables = jamesmacaulay$elm_graphql$GraphQL$Request$Builder$varsFromDirectives(directives);
 	var _n1 = spec;
 	var specVariables = _n1.c;
@@ -6455,9 +6455,9 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$FragmentSpread = func
 	return {$: 1, a: a};
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$fragmentSpread = function (fragmentRecord) {
-	var name = fragmentRecord.v;
-	var spec = fragmentRecord.j;
-	var astFragmentSpreadInfo = {g: _List_Nil, v: name};
+	var name = fragmentRecord.P;
+	var spec = fragmentRecord.k;
+	var astFragmentSpreadInfo = {g: _List_Nil, P: name};
 	var _n0 = spec;
 	var decoder = _n0.b;
 	var nestedFragments = _n0.d;
@@ -6486,7 +6486,7 @@ var elm$json$Json$Decode$nullable = function (decoder) {
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$AnyType = {$: 1};
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedTypeInfo = F4(
 	function (nullability, coreType, join, selectionSet) {
-		return {k: coreType, p: join, E: nullability, f: selectionSet};
+		return {l: coreType, r: join, C: nullability, f: selectionSet};
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$NullableFlag = 0;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nullableFlag = 0;
@@ -6500,7 +6500,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nullable = function (_n0) 
 		return A4(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec,
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedType(
-				A4(jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedTypeInfo, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nullableFlag, typeInfo.k, typeInfo.p, typeInfo.f)),
+				A4(jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedTypeInfo, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nullableFlag, typeInfo.l, typeInfo.r, typeInfo.f)),
 			A2(elm$core$Basics$composeL, elm$json$Json$Decode$nullable, decoder),
 			vars,
 			fragments);
@@ -6592,12 +6592,12 @@ var author$project$Query$Var$firstVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'first',
 	function ($) {
-		return $.aY;
+		return $.bx;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$int);
 var author$project$Type$CommitSummary = F2(
 	function (cursor, totalCount) {
-		return {aU: cursor, be: totalCount};
+		return {bs: cursor, bR: totalCount};
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$IntType = 0;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$primitiveSpec = F2(
@@ -6605,7 +6605,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$primitiveSpec = F2(
 		return A4(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec,
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedType(
-				{k: coreType, p: elm$core$Basics$always, E: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag, f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$emptySelectionSet}),
+				{l: coreType, r: elm$core$Basics$always, C: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag, f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$emptySelectionSet}),
 			elm$core$Basics$always(decoder),
 			_List_Nil,
 			_List_Nil);
@@ -6629,7 +6629,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$join = F2(
 					_Utils_update(
 						typeInfoA,
 						{
-							k: A2(typeInfoA.p, typeInfoA.k, typeInfoB.k),
+							l: A2(typeInfoA.r, typeInfoA.l, typeInfoB.l),
 							f: A2(jamesmacaulay$elm_graphql$GraphQL$Request$Builder$mergeSelectionSets, typeInfoA.f, typeInfoB.f)
 						}));
 			} else {
@@ -6656,9 +6656,9 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$list = function (_n0) {
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec,
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedType(
 			{
-				k: itemType,
-				p: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$listJoin,
-				E: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag,
+				l: itemType,
+				r: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$listJoin,
+				C: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag,
 				f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSourceType(itemType)
 			}),
 		A2(elm$core$Basics$composeL, elm$json$Json$Decode$list, decoder),
@@ -6666,7 +6666,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$list = function (_n0) {
 		fragments);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$emptyObjectSpecifiedType = jamesmacaulay$elm_graphql$GraphQL$Request$Builder$SpecifiedType(
-	{k: 0, p: elm$core$Basics$always, E: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag, f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$emptySelectionSet});
+	{l: 0, r: elm$core$Basics$always, C: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag, f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$emptySelectionSet});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$object = function (ctr) {
 	return A4(
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec,
@@ -6679,7 +6679,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$object = function (ctr) {
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Operation = elm$core$Basics$identity;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Document = elm$core$Basics$identity;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$fragmentDefinitionsFromOperation = function (_n0) {
-	var spec = _n0.j;
+	var spec = _n0.k;
 	var _n1 = spec;
 	var fragments = _n1.d;
 	return fragments;
@@ -6698,16 +6698,16 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableDefinitionsAST = f
 	return A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$toDefinitionAST, vars);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$operationAST = function (_n0) {
-	var operationType = _n0.F;
-	var name = _n0.v;
+	var operationType = _n0.D;
+	var name = _n0.P;
 	var directives = _n0.g;
-	var spec = _n0.j;
+	var spec = _n0.k;
 	return {
 		g: A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Builder$directiveAST, directives),
-		v: name,
-		F: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$operationTypeAST(operationType),
+		P: name,
+		D: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$operationTypeAST(operationType),
 		f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSpec(spec),
-		bh: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableDefinitionsAST(spec)
+		bU: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableDefinitionsAST(spec)
 	};
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Document = elm$core$Basics$identity;
@@ -6778,8 +6778,8 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDi
 	return '@' + name;
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDirective = function (_n0) {
-	var name = _n0.v;
-	var _arguments = _n0.ai;
+	var name = _n0.P;
+	var _arguments = _n0.aP;
 	return A2(
 		elm$core$String$join,
 		'',
@@ -6809,7 +6809,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFr
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFragmentSpread = F2(
 	function (indentLevel, _n0) {
-		var name = _n0.v;
+		var name = _n0.P;
 		var directives = _n0.g;
 		return A2(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$indent,
@@ -6838,7 +6838,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFi
 					_List_fromArray(
 						[
 							jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(
-							A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFieldAlias, field.ah)),
+							A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFieldAlias, field.aO)),
 							_List_fromArray(
 							[
 								A2(
@@ -6846,8 +6846,8 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFi
 								'',
 								A2(
 									elm$core$List$cons,
-									field.v,
-									jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeArgList(field.ai)))
+									field.P,
+									jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeArgList(field.aP)))
 							]),
 							A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDirective, field.g),
 							A2(jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeSelectionSet, indentLevel, field.f)
@@ -6855,7 +6855,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFi
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeInlineFragment = F2(
 	function (indentLevel, _n2) {
-		var typeCondition = _n2.W;
+		var typeCondition = _n2.aa;
 		var directives = _n2.g;
 		var selectionSet = _n2.f;
 		return A2(
@@ -6905,8 +6905,8 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeSe
 			]);
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFragmentDefinition = function (_n0) {
-	var name = _n0.v;
-	var typeCondition = _n0.W;
+	var name = _n0.P;
+	var typeCondition = _n0.aa;
 	var directives = _n0.g;
 	var selectionSet = _n0.f;
 	return A2(
@@ -6971,11 +6971,11 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVa
 				[
 					_List_fromArray(
 					[
-						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableName(info.v) + ':',
-						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeTypeRef(info.aI)
+						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableName(info.P) + ':',
+						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeTypeRef(info.be)
 					]),
 					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(
-					A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDefaultValue, info.am))
+					A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDefaultValue, info.aS))
 				])));
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableDefinitions = function (defs) {
@@ -6996,10 +6996,10 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeOp
 				[
 					_List_fromArray(
 					[
-						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeOperationType(info.F)
+						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeOperationType(info.D)
 					]),
-					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(info.v),
-					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableDefinitions(info.bh),
+					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(info.P),
+					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableDefinitions(info.bU),
 					A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDirective, info.g),
 					A2(jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeSelectionSet, 0, info.f)
 				])));
@@ -7037,16 +7037,16 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$document = function (opera
 				jamesmacaulay$elm_graphql$GraphQL$Request$Builder$operationAST(operation))
 			]));
 	return {
-		Z: ast,
-		V: operation,
-		ad: jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDocument(ast)
+		af: ast,
+		_: operation,
+		aE: jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDocument(ast)
 	};
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$QueryOperationType = 0;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryOperationType = 0;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryDocument = function (spec) {
 	return jamesmacaulay$elm_graphql$GraphQL$Request$Builder$document(
-		{g: _List_Nil, v: elm$core$Maybe$Nothing, F: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryOperationType, j: spec});
+		{g: _List_Nil, P: elm$core$Maybe$Nothing, D: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryOperationType, k: spec});
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Request = elm$core$Basics$identity;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$specDecoder = function (_n0) {
@@ -7056,15 +7056,15 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$specDecoder = function (_n
 		jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSourceType(sourceType));
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentResponseDecoder = function (_n0) {
-	var operation = _n0.V;
+	var operation = _n0._;
 	var _n1 = operation;
-	var spec = _n1.j;
+	var spec = _n1.k;
 	return jamesmacaulay$elm_graphql$GraphQL$Request$Builder$specDecoder(spec);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentVariables = function (_n0) {
-	var operation = _n0.V;
+	var operation = _n0._;
 	var _n1 = operation;
-	var spec = _n1.j;
+	var spec = _n1.k;
 	var _n2 = spec;
 	var vars = _n2.c;
 	return vars;
@@ -7118,14 +7118,14 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$extractValuesFrom
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$request = F2(
 	function (vars, doc) {
-		var operation = doc.V;
-		var ast = doc.Z;
-		var serialized = doc.ad;
+		var operation = doc._;
+		var ast = doc.af;
+		var serialized = doc.aE;
 		return {
-			aV: ast,
-			an: serialized,
-			aE: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentResponseDecoder(doc),
-			aJ: A2(
+			bu: ast,
+			aT: serialized,
+			ba: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentResponseDecoder(doc),
+			bf: A2(
 				jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$extractValuesFrom,
 				vars,
 				jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentVariables(doc))
@@ -7167,7 +7167,7 @@ var author$project$Query$Request$commitSummaryRequest = F3(
 	function (owner, name, qualifiedName) {
 		return A2(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$request,
-			{aY: 1, v: name, w: owner, y: qualifiedName},
+			{bx: 1, P: name, Q: owner, R: qualifiedName},
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryDocument(
 				A2(
 					author$project$Query$Request$buildRequest,
@@ -7195,19 +7195,19 @@ var author$project$Query$Var$beforeVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'before',
 	function ($) {
-		return $.aN;
+		return $.bj;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$string);
 var author$project$Query$Var$lastVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'last',
 	function ($) {
-		return $.a2;
+		return $.bF;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$int);
 var author$project$Type$InitialCommit = F2(
 	function (commitUrl, message) {
-		return {ak: commitUrl, a4: message};
+		return {br: commitUrl, bH: message};
 	});
 var elm$core$List$head = function (list) {
 	if (list.b) {
@@ -7252,12 +7252,12 @@ var author$project$Query$Request$initialCommitRequest = F4(
 						A2(
 							elm$core$Maybe$withDefault,
 							'',
-							elm$core$List$head(commitSummary.aU)))),
+							elm$core$List$head(commitSummary.bs)))),
 				elm$core$Maybe$Just(
-					elm$core$String$fromInt(commitSummary.be))));
+					elm$core$String$fromInt(commitSummary.bR))));
 		return A2(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$request,
-			{aN: before, a2: 1, v: name, w: owner, y: qualifiedName},
+			{bj: before, bF: 1, P: name, Q: owner, R: qualifiedName},
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryDocument(
 				A2(
 					author$project$Query$Request$buildRequest,
@@ -7306,48 +7306,48 @@ var author$project$Main$update = F2(
 				elm$core$List$all,
 				author$project$Helper$isNothing,
 				_List_fromArray(
-					[form.w, form.v, form.y, form.s]));
+					[form.Q, form.P, form.R, form.M]));
 		};
 		switch (msg.$) {
 			case 0:
 				var value = msg.a;
-				var old = model.a;
+				var old = model.d;
 				var _new = _Utils_update(
 					old,
 					{
-						w: author$project$Helper$emptyToNothing(value)
+						Q: author$project$Helper$emptyToNothing(value)
 					});
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							a: _new,
-							z: isSendable(_new)
+							d: _new,
+							H: isSendable(_new)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 1:
 				var value = msg.a;
-				var old = model.a;
+				var old = model.d;
 				var _new = _Utils_update(
 					old,
 					{
-						v: author$project$Helper$emptyToNothing(value)
+						P: author$project$Helper$emptyToNothing(value)
 					});
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							a: _new,
-							z: isSendable(_new)
+							d: _new,
+							H: isSendable(_new)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 2:
 				var value = msg.a;
-				var old = model.a;
+				var old = model.d;
 				var _new = _Utils_update(
 					old,
 					{
-						y: A2(
+						R: A2(
 							elm$core$Maybe$map,
 							function (s) {
 								return 'refs/heads/' + s;
@@ -7358,38 +7358,38 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							a: _new,
-							z: isSendable(_new)
+							d: _new,
+							H: isSendable(_new)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 3:
 				var value = msg.a;
-				var old = model.a;
+				var old = model.d;
 				var _new = _Utils_update(
 					old,
 					{
-						s: author$project$Helper$emptyToNothing(value)
+						M: author$project$Helper$emptyToNothing(value)
 					});
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							a: _new,
-							z: isSendable(_new)
+							d: _new,
+							H: isSendable(_new)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 4:
-				if (model.z) {
-					var qualifiedName = author$project$Helper$unwrap(model.a.y);
-					var owner = author$project$Helper$unwrap(model.a.w);
-					var name = author$project$Helper$unwrap(model.a.v);
+				if (model.H) {
+					var qualifiedName = author$project$Helper$unwrap(model.d.R);
+					var owner = author$project$Helper$unwrap(model.d.Q);
+					var name = author$project$Helper$unwrap(model.d.P);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{C: 2, U: elm$core$Maybe$Nothing}),
+							{N: 2, as: elm$core$Maybe$Nothing}),
 						A2(
 							author$project$Main$sendQueryCommitSummaryRequest,
-							author$project$Helper$unwrap(model.a.s),
+							author$project$Helper$unwrap(model.d.M),
 							A3(author$project$Query$Request$commitSummaryRequest, owner, name, qualifiedName)));
 				} else {
 					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
@@ -7399,22 +7399,22 @@ var author$project$Main$update = F2(
 				var _n1 = A2(elm$core$Result$withDefault, elm$core$Maybe$Nothing, response);
 				if (!_n1.$) {
 					var data = _n1.a;
-					var qualifiedName = author$project$Helper$unwrap(model.a.y);
-					var owner = author$project$Helper$unwrap(model.a.w);
-					var name = author$project$Helper$unwrap(model.a.v);
+					var qualifiedName = author$project$Helper$unwrap(model.d.R);
+					var owner = author$project$Helper$unwrap(model.d.Q);
+					var name = author$project$Helper$unwrap(model.d.P);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{C: 1}),
+							{N: 1}),
 						A2(
 							author$project$Main$sendQueryInitialCommitRequest,
-							author$project$Helper$unwrap(model.a.s),
+							author$project$Helper$unwrap(model.d.M),
 							A4(author$project$Query$Request$initialCommitRequest, owner, name, qualifiedName, data)));
 				} else {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{C: 3}),
+							{N: 3}),
 						elm$core$Platform$Cmd$none);
 				}
 			default:
@@ -7423,8 +7423,8 @@ var author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							C: 3,
-							U: A2(
+							N: 3,
+							as: A2(
 								elm$core$Maybe$withDefault,
 								elm$core$Maybe$Nothing,
 								A2(
@@ -7435,19 +7435,7 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$SendCommitSummaryRequest = {$: 4};
-var author$project$Main$UpdateApiToken = function (a) {
-	return {$: 3, a: a};
-};
-var author$project$Main$UpdateBranch = function (a) {
-	return {$: 2, a: a};
-};
-var author$project$Main$UpdateName = function (a) {
-	return {$: 1, a: a};
-};
-var author$project$Main$UpdateOwner = function (a) {
-	return {$: 0, a: a};
-};
+var author$project$Msg$SendCommitSummaryRequest = {$: 4};
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
 		case 0:
@@ -7462,13 +7450,32 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 };
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var author$project$Main$labeledText = F2(
-	function (label, value) {
-		return elm$html$Html$text(
-			label + (': ' + A2(elm$core$Maybe$withDefault, '', value)));
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 0, a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var elm$html$Html$span = _VirtualDom_node('span');
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -7476,6 +7483,262 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
+var surprisetalk$elm_bulma$Bulma$Classes$button = elm$html$Html$Attributes$class('button');
+var surprisetalk$elm_bulma$Bulma$Classes$isActive = elm$html$Html$Attributes$class('is-active');
+var surprisetalk$elm_bulma$Bulma$Classes$isBlack = elm$html$Html$Attributes$class('is-black');
+var surprisetalk$elm_bulma$Bulma$Classes$isDanger = elm$html$Html$Attributes$class('is-danger');
+var surprisetalk$elm_bulma$Bulma$Classes$isDark = elm$html$Html$Attributes$class('is-dark');
+var surprisetalk$elm_bulma$Bulma$Classes$isFocused = elm$html$Html$Attributes$class('is-focused');
+var surprisetalk$elm_bulma$Bulma$Classes$isHovered = elm$html$Html$Attributes$class('is-hovered');
+var surprisetalk$elm_bulma$Bulma$Classes$isInfo = elm$html$Html$Attributes$class('is-info');
+var surprisetalk$elm_bulma$Bulma$Classes$isInverted = elm$html$Html$Attributes$class('is-inverted');
+var surprisetalk$elm_bulma$Bulma$Classes$isLarge = elm$html$Html$Attributes$class('is-large');
+var surprisetalk$elm_bulma$Bulma$Classes$isLight = elm$html$Html$Attributes$class('is-light');
+var surprisetalk$elm_bulma$Bulma$Classes$isLink = elm$html$Html$Attributes$class('is-link');
+var surprisetalk$elm_bulma$Bulma$Classes$isLoading = elm$html$Html$Attributes$class('is-loading');
+var surprisetalk$elm_bulma$Bulma$Classes$isMedium = elm$html$Html$Attributes$class('is-medium');
+var surprisetalk$elm_bulma$Bulma$Classes$isOutlined = elm$html$Html$Attributes$class('is-outlined');
+var surprisetalk$elm_bulma$Bulma$Classes$isPrimary = elm$html$Html$Attributes$class('is-primary');
+var surprisetalk$elm_bulma$Bulma$Classes$isRounded = elm$html$Html$Attributes$class('is-rounded');
+var surprisetalk$elm_bulma$Bulma$Classes$isSelected = elm$html$Html$Attributes$class('is-selected');
+var surprisetalk$elm_bulma$Bulma$Classes$isSmall = elm$html$Html$Attributes$class('is-small');
+var surprisetalk$elm_bulma$Bulma$Classes$isStatic = elm$html$Html$Attributes$class('is-static');
+var surprisetalk$elm_bulma$Bulma$Classes$isSuccess = elm$html$Html$Attributes$class('is-success');
+var surprisetalk$elm_bulma$Bulma$Classes$isWarning = elm$html$Html$Attributes$class('is-warning');
+var surprisetalk$elm_bulma$Bulma$Classes$isWhite = elm$html$Html$Attributes$class('is-white');
+var surprisetalk$elm_bulma$Bulma$Classes$none = elm$html$Html$Attributes$class('');
+var surprisetalk$elm_bulma$Bulma$Classes$icon = elm$html$Html$Attributes$class('icon');
+var elm$virtual_dom$VirtualDom$node = function (tag) {
+	return _VirtualDom_node(
+		_VirtualDom_noScript(tag));
+};
+var elm$html$Html$node = elm$virtual_dom$VirtualDom$node;
+var surprisetalk$elm_bulma$Helpers$node = F3(
+	function (tag, attrs_, attrs) {
+		return A2(
+			elm$html$Html$node,
+			tag,
+			_Utils_ap(attrs, attrs_));
+	});
+var surprisetalk$elm_bulma$Bulma$Elements$icon = function (size) {
+	return A2(
+		surprisetalk$elm_bulma$Helpers$node,
+		'span',
+		_List_fromArray(
+			[
+				surprisetalk$elm_bulma$Bulma$Classes$icon,
+				function () {
+				switch (size) {
+					case 0:
+						return surprisetalk$elm_bulma$Bulma$Classes$isSmall;
+					case 1:
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					case 2:
+						return surprisetalk$elm_bulma$Bulma$Classes$isMedium;
+					default:
+						return surprisetalk$elm_bulma$Bulma$Classes$isLarge;
+				}
+			}()
+			]));
+};
+var surprisetalk$elm_bulma$Bulma$Elements$button = F3(
+	function (_n0, attrs, htmls) {
+		var disabled = _n0.bt;
+		var outlined = _n0.aA;
+		var inverted = _n0.at;
+		var rounded = _n0.aC;
+		var size = _n0.o;
+		var state = _n0.b;
+		var color = _n0.bp;
+		var _static = _n0.aG;
+		var iconLeft = _n0.aq;
+		var iconRight = _n0.ar;
+		var iconRight_ = function () {
+			if (!iconRight.$) {
+				var _n13 = iconRight.a;
+				var size_ = _n13.a;
+				var attrs_ = _n13.b;
+				var body = _n13.c;
+				return _List_fromArray(
+					[
+						A3(
+						surprisetalk$elm_bulma$Bulma$Elements$icon,
+						size_,
+						attrs_,
+						_List_fromArray(
+							[body]))
+					]);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var iconLeft_ = function () {
+			if (!iconLeft.$) {
+				var _n11 = iconLeft.a;
+				var size_ = _n11.a;
+				var attrs_ = _n11.b;
+				var body = _n11.c;
+				return _List_fromArray(
+					[
+						A3(
+						surprisetalk$elm_bulma$Bulma$Elements$icon,
+						size_,
+						attrs_,
+						_List_fromArray(
+							[body]))
+					]);
+			} else {
+				return _List_Nil;
+			}
+		}();
+		var htmls_ = function () {
+			if (!htmls.b) {
+				return _Utils_ap(iconLeft_, iconRight_);
+			} else {
+				var htmls__ = htmls;
+				return _Utils_ap(
+					iconLeft_,
+					_Utils_ap(
+						_List_fromArray(
+							[
+								A2(elm$html$Html$span, _List_Nil, htmls__)
+							]),
+						iconRight_));
+			}
+		}();
+		return A4(
+			surprisetalk$elm_bulma$Helpers$node,
+			'a',
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$disabled(disabled),
+					surprisetalk$elm_bulma$Bulma$Classes$button,
+					function () {
+					if (_static) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isStatic;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (outlined) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isOutlined;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (inverted) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isInverted;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (rounded) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isRounded;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (!color) {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$isSelected;
+					}
+				}(),
+					function () {
+					switch (color) {
+						case 0:
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							return surprisetalk$elm_bulma$Bulma$Classes$isWhite;
+						case 2:
+							return surprisetalk$elm_bulma$Bulma$Classes$isLight;
+						case 3:
+							return surprisetalk$elm_bulma$Bulma$Classes$isDark;
+						case 4:
+							return surprisetalk$elm_bulma$Bulma$Classes$isBlack;
+						case 5:
+							return surprisetalk$elm_bulma$Bulma$Classes$isPrimary;
+						case 6:
+							return surprisetalk$elm_bulma$Bulma$Classes$isLink;
+						case 7:
+							return surprisetalk$elm_bulma$Bulma$Classes$isInfo;
+						case 8:
+							return surprisetalk$elm_bulma$Bulma$Classes$isSuccess;
+						case 9:
+							return surprisetalk$elm_bulma$Bulma$Classes$isWarning;
+						default:
+							return surprisetalk$elm_bulma$Bulma$Classes$isDanger;
+					}
+				}(),
+					function () {
+					switch (size) {
+						case 0:
+							return surprisetalk$elm_bulma$Bulma$Classes$isSmall;
+						case 1:
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 2:
+							return surprisetalk$elm_bulma$Bulma$Classes$isMedium;
+						default:
+							return surprisetalk$elm_bulma$Bulma$Classes$isLarge;
+					}
+				}(),
+					function () {
+					switch (state) {
+						case 0:
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							return surprisetalk$elm_bulma$Bulma$Classes$isHovered;
+						case 2:
+							return surprisetalk$elm_bulma$Bulma$Classes$isFocused;
+						case 3:
+							return surprisetalk$elm_bulma$Bulma$Classes$isActive;
+						default:
+							return surprisetalk$elm_bulma$Bulma$Classes$isLoading;
+					}
+				}()
+				]),
+			attrs,
+			htmls_);
+	});
+var surprisetalk$elm_bulma$Bulma$Modifiers$Blur = 0;
+var surprisetalk$elm_bulma$Bulma$Modifiers$Default = 0;
+var surprisetalk$elm_bulma$Bulma$Modifiers$Standard = 1;
+var surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers = {bp: 0, bt: false, aq: elm$core$Maybe$Nothing, ar: elm$core$Maybe$Nothing, at: false, aA: false, aC: false, o: 1, b: 0, aG: false};
+var surprisetalk$elm_bulma$Bulma$Modifiers$Primary = 5;
+var author$project$View$getFirstCommitButton = function (sendable) {
+	return A3(
+		surprisetalk$elm_bulma$Bulma$Elements$button,
+		_Utils_update(
+			surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers,
+			{bp: 5, bt: sendable}),
+		_List_fromArray(
+			[
+				elm$html$Html$Events$onClick(author$project$Msg$SendCommitSummaryRequest)
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('get first commit')
+			]));
+};
+var author$project$Msg$UpdateApiToken = function (a) {
+	return {$: 3, a: a};
+};
+var author$project$Msg$UpdateBranch = function (a) {
+	return {$: 2, a: a};
+};
+var author$project$Msg$UpdateName = function (a) {
+	return {$: 1, a: a};
+};
+var author$project$Msg$UpdateOwner = function (a) {
+	return {$: 0, a: a};
+};
+var elm$html$Html$div = _VirtualDom_node('div');
+var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$html$Html$Events$alwaysStop = function (x) {
@@ -7484,7 +7747,6 @@ var elm$html$Html$Events$alwaysStop = function (x) {
 var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 1, a: a};
 };
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -7510,7 +7772,7 @@ var elm$html$Html$Events$onInput = function (tagger) {
 			elm$html$Html$Events$alwaysStop,
 			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
-var author$project$Main$requiredInput = F3(
+var author$project$View$requiredInput = F3(
 	function (ph, msg, val) {
 		return A2(
 			elm$html$Html$div,
@@ -7521,8 +7783,8 @@ var author$project$Main$requiredInput = F3(
 					elm$html$Html$input,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$placeholder(ph),
 							elm$html$Html$Events$onInput(msg),
+							elm$html$Html$Attributes$placeholder(ph),
 							elm$html$Html$Attributes$value(
 							author$project$Helper$unwrap(val))
 						]),
@@ -7537,44 +7799,6 @@ var author$project$Main$requiredInput = F3(
 					}())
 				]));
 	});
-var elm$html$Html$a = _VirtualDom_node('a');
-var elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var author$project$Main$resultView = function (v) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$a,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$href(v.ak)
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('commitUrl: ' + v.ak)
-							]))
-					])),
-				A2(
-				elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						elm$html$Html$text('message: ' + v.a4)
-					]))
-			]));
-};
 var elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (!maybeValue.$) {
@@ -7584,33 +7808,354 @@ var elm$core$Maybe$andThen = F2(
 			return elm$core$Maybe$Nothing;
 		}
 	});
-var elm$html$Html$br = _VirtualDom_node('br');
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 0, a: a};
-};
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
+var surprisetalk$elm_bulma$Bulma$Classes$column = elm$html$Html$Attributes$class('column');
+var surprisetalk$elm_bulma$Bulma$Classes$is01Desktop = elm$html$Html$Attributes$class('is-1-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is01FullHD = elm$html$Html$Attributes$class('is-1-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is01Mobile = elm$html$Html$Attributes$class('is-1-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is01Tablet = elm$html$Html$Attributes$class('is-1-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is01Widescreen = elm$html$Html$Attributes$class('is-1-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is02Desktop = elm$html$Html$Attributes$class('is-2-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is02FullHD = elm$html$Html$Attributes$class('is-2-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is02Mobile = elm$html$Html$Attributes$class('is-2-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is02Tablet = elm$html$Html$Attributes$class('is-2-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is02Widescreen = elm$html$Html$Attributes$class('is-2-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is03Desktop = elm$html$Html$Attributes$class('is-3-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is03FullHD = elm$html$Html$Attributes$class('is-3-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is03Mobile = elm$html$Html$Attributes$class('is-3-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is03Tablet = elm$html$Html$Attributes$class('is-3-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is03Widescreen = elm$html$Html$Attributes$class('is-3-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is04Desktop = elm$html$Html$Attributes$class('is-4-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is04FullHD = elm$html$Html$Attributes$class('is-4-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is04Mobile = elm$html$Html$Attributes$class('is-4-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is04Tablet = elm$html$Html$Attributes$class('is-4-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is04Widescreen = elm$html$Html$Attributes$class('is-4-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is05Desktop = elm$html$Html$Attributes$class('is-5-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is05FullHD = elm$html$Html$Attributes$class('is-5-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is05Mobile = elm$html$Html$Attributes$class('is-5-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is05Tablet = elm$html$Html$Attributes$class('is-5-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is05Widescreen = elm$html$Html$Attributes$class('is-5-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is06Desktop = elm$html$Html$Attributes$class('is-6-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is06FullHD = elm$html$Html$Attributes$class('is-6-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is06Mobile = elm$html$Html$Attributes$class('is-6-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is06Tablet = elm$html$Html$Attributes$class('is-6-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is06Widescreen = elm$html$Html$Attributes$class('is-6-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is07Desktop = elm$html$Html$Attributes$class('is-7-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is07FullHD = elm$html$Html$Attributes$class('is-7-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is07Mobile = elm$html$Html$Attributes$class('is-7-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is07Tablet = elm$html$Html$Attributes$class('is-7-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is07Widescreen = elm$html$Html$Attributes$class('is-7-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is08Desktop = elm$html$Html$Attributes$class('is-8-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is08FullHD = elm$html$Html$Attributes$class('is-8-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is08Mobile = elm$html$Html$Attributes$class('is-8-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is08Tablet = elm$html$Html$Attributes$class('is-8-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is08Widescreen = elm$html$Html$Attributes$class('is-8-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is09Desktop = elm$html$Html$Attributes$class('is-9-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is09FullHD = elm$html$Html$Attributes$class('is-9-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is09Mobile = elm$html$Html$Attributes$class('is-9-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is09Tablet = elm$html$Html$Attributes$class('is-9-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is09Widescreen = elm$html$Html$Attributes$class('is-9-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is10Desktop = elm$html$Html$Attributes$class('is-10-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is10FullHD = elm$html$Html$Attributes$class('is-10-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is10Mobile = elm$html$Html$Attributes$class('is-10-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is10Tablet = elm$html$Html$Attributes$class('is-10-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is10Widescreen = elm$html$Html$Attributes$class('is-10-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$is11Desktop = elm$html$Html$Attributes$class('is-11-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$is11FullHD = elm$html$Html$Attributes$class('is-11-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$is11Mobile = elm$html$Html$Attributes$class('is-11-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$is11Tablet = elm$html$Html$Attributes$class('is-11-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$is11Widescreen = elm$html$Html$Attributes$class('is-11-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$isNarrowDesktop = elm$html$Html$Attributes$class('is-narrow-desktop');
+var surprisetalk$elm_bulma$Bulma$Classes$isNarrowFullHD = elm$html$Html$Attributes$class('is-narrow-fullhd');
+var surprisetalk$elm_bulma$Bulma$Classes$isNarrowMobile = elm$html$Html$Attributes$class('is-narrow-mobile');
+var surprisetalk$elm_bulma$Bulma$Classes$isNarrowTablet = elm$html$Html$Attributes$class('is-narrow-tablet');
+var surprisetalk$elm_bulma$Bulma$Classes$isNarrowWidescreen = elm$html$Html$Attributes$class('is-narrow-widescreen');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset01 = elm$html$Html$Attributes$class('is-offset-1');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset02 = elm$html$Html$Attributes$class('is-offset-2');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset03 = elm$html$Html$Attributes$class('is-offset-3');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset04 = elm$html$Html$Attributes$class('is-offset-4');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset05 = elm$html$Html$Attributes$class('is-offset-5');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset06 = elm$html$Html$Attributes$class('is-offset-6');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset07 = elm$html$Html$Attributes$class('is-offset-7');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset08 = elm$html$Html$Attributes$class('is-offset-8');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset09 = elm$html$Html$Attributes$class('is-offset-9');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset10 = elm$html$Html$Attributes$class('is-offset-10');
+var surprisetalk$elm_bulma$Bulma$Classes$isOffset11 = elm$html$Html$Attributes$class('is-offset-11');
+var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
+	var widths = _n0.ac;
+	var offset = _n0.a$;
 	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
+		surprisetalk$elm_bulma$Helpers$node,
+		'div',
+		_List_fromArray(
+			[
+				surprisetalk$elm_bulma$Bulma$Classes$column,
+				function () {
+				var _n1 = widths.aw;
+				if (!_n1.$) {
+					switch (_n1.a) {
+						case 0:
+							var _n2 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							var _n3 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is01Mobile;
+						case 2:
+							var _n4 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is02Mobile;
+						case 3:
+							var _n5 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is03Mobile;
+						case 4:
+							var _n6 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is04Mobile;
+						case 5:
+							var _n7 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is05Mobile;
+						case 6:
+							var _n8 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is06Mobile;
+						case 7:
+							var _n9 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is07Mobile;
+						case 8:
+							var _n10 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is08Mobile;
+						case 9:
+							var _n11 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is09Mobile;
+						case 10:
+							var _n12 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is10Mobile;
+						default:
+							var _n13 = _n1.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is11Mobile;
+					}
+				} else {
+					return surprisetalk$elm_bulma$Bulma$Classes$isNarrowMobile;
+				}
+			}(),
+				function () {
+				var _n14 = widths.aK;
+				if (!_n14.$) {
+					switch (_n14.a) {
+						case 0:
+							var _n15 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							var _n16 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is01Tablet;
+						case 2:
+							var _n17 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is02Tablet;
+						case 3:
+							var _n18 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is03Tablet;
+						case 4:
+							var _n19 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is04Tablet;
+						case 5:
+							var _n20 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is05Tablet;
+						case 6:
+							var _n21 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is06Tablet;
+						case 7:
+							var _n22 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is07Tablet;
+						case 8:
+							var _n23 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is08Tablet;
+						case 9:
+							var _n24 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is09Tablet;
+						case 10:
+							var _n25 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is10Tablet;
+						default:
+							var _n26 = _n14.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is11Tablet;
+					}
+				} else {
+					return surprisetalk$elm_bulma$Bulma$Classes$isNarrowTablet;
+				}
+			}(),
+				function () {
+				var _n27 = widths.aj;
+				if (!_n27.$) {
+					switch (_n27.a) {
+						case 0:
+							var _n28 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							var _n29 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is01Desktop;
+						case 2:
+							var _n30 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is02Desktop;
+						case 3:
+							var _n31 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is03Desktop;
+						case 4:
+							var _n32 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is04Desktop;
+						case 5:
+							var _n33 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is05Desktop;
+						case 6:
+							var _n34 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is06Desktop;
+						case 7:
+							var _n35 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is07Desktop;
+						case 8:
+							var _n36 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is08Desktop;
+						case 9:
+							var _n37 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is09Desktop;
+						case 10:
+							var _n38 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is10Desktop;
+						default:
+							var _n39 = _n27.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is11Desktop;
+					}
+				} else {
+					return surprisetalk$elm_bulma$Bulma$Classes$isNarrowDesktop;
+				}
+			}(),
+				function () {
+				var _n40 = widths.aM;
+				if (!_n40.$) {
+					switch (_n40.a) {
+						case 0:
+							var _n41 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							var _n42 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is01Widescreen;
+						case 2:
+							var _n43 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is02Widescreen;
+						case 3:
+							var _n44 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is03Widescreen;
+						case 4:
+							var _n45 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is04Widescreen;
+						case 5:
+							var _n46 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is05Widescreen;
+						case 6:
+							var _n47 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is06Widescreen;
+						case 7:
+							var _n48 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is07Widescreen;
+						case 8:
+							var _n49 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is08Widescreen;
+						case 9:
+							var _n50 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is09Widescreen;
+						case 10:
+							var _n51 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is10Widescreen;
+						default:
+							var _n52 = _n40.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is11Widescreen;
+					}
+				} else {
+					return surprisetalk$elm_bulma$Bulma$Classes$isNarrowWidescreen;
+				}
+			}(),
+				function () {
+				var _n53 = widths.am;
+				if (!_n53.$) {
+					switch (_n53.a) {
+						case 0:
+							var _n54 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						case 1:
+							var _n55 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is01FullHD;
+						case 2:
+							var _n56 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is02FullHD;
+						case 3:
+							var _n57 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is03FullHD;
+						case 4:
+							var _n58 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is04FullHD;
+						case 5:
+							var _n59 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is05FullHD;
+						case 6:
+							var _n60 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is06FullHD;
+						case 7:
+							var _n61 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is07FullHD;
+						case 8:
+							var _n62 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is08FullHD;
+						case 9:
+							var _n63 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is09FullHD;
+						case 10:
+							var _n64 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is10FullHD;
+						default:
+							var _n65 = _n53.a;
+							return surprisetalk$elm_bulma$Bulma$Classes$is11FullHD;
+					}
+				} else {
+					return surprisetalk$elm_bulma$Bulma$Classes$isNarrowFullHD;
+				}
+			}(),
+				function () {
+				switch (offset) {
+					case 0:
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					case 1:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset01;
+					case 2:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset02;
+					case 3:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset03;
+					case 4:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset04;
+					case 5:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset05;
+					case 6:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset06;
+					case 7:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset07;
+					case 8:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset08;
+					case 9:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset09;
+					case 10:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset10;
+					default:
+						return surprisetalk$elm_bulma$Bulma$Classes$isOffset11;
+				}
+			}()
+			]));
 };
-var author$project$Main$view = function (model) {
+var surprisetalk$elm_bulma$Bulma$Modifiers$Auto = 0;
+var surprisetalk$elm_bulma$Bulma$Columns$columnModifiers = {
+	a$: 0,
+	ac: {
+		aj: elm$core$Maybe$Just(0),
+		am: elm$core$Maybe$Just(0),
+		aw: elm$core$Maybe$Just(0),
+		aK: elm$core$Maybe$Just(0),
+		aM: elm$core$Maybe$Just(0)
+	}
+};
+var author$project$View$inputRegion = function (model) {
 	var toBranch = function (qualifiedName) {
 		var f = function (s) {
 			return elm$core$List$head(
@@ -7619,116 +8164,158 @@ var author$project$Main$view = function (model) {
 		};
 		return A2(elm$core$Maybe$andThen, f, qualifiedName);
 	};
-	return {
-		aO: _List_fromArray(
+	return A3(
+		surprisetalk$elm_bulma$Bulma$Columns$column,
+		surprisetalk$elm_bulma$Bulma$Columns$columnModifiers,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A3(author$project$View$requiredInput, 'owner', author$project$Msg$UpdateOwner, model.d.Q),
+				A3(author$project$View$requiredInput, 'name', author$project$Msg$UpdateName, model.d.P),
+				A3(
+				author$project$View$requiredInput,
+				'branch',
+				author$project$Msg$UpdateBranch,
+				toBranch(model.d.R)),
+				A3(author$project$View$requiredInput, 'apiToken', author$project$Msg$UpdateApiToken, model.d.M)
+			]));
+};
+var author$project$View$previewRegion = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		A2(
+			elm$core$List$map,
+			function (_n0) {
+				var l = _n0.a;
+				var f = _n0.b;
+				return A2(
+					elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							l + (': ' + author$project$Helper$unwrap(
+								f(model.d))))
+						]));
+			},
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'owner',
+					function ($) {
+						return $.Q;
+					}),
+					_Utils_Tuple2(
+					'name',
+					function ($) {
+						return $.P;
+					}),
+					_Utils_Tuple2(
+					'qualifiedName',
+					function ($) {
+						return $.R;
+					}),
+					_Utils_Tuple2(
+					'apiToken',
+					function ($) {
+						return $.M;
+					})
+				])));
+};
+var elm$html$Html$a = _VirtualDom_node('a');
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var author$project$View$resultView = function (v) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
 			[
 				A2(
-				elm$html$Html$div,
+				elm$html$Html$a,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$href(v.br)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text(v.bH)
+					]))
+			]));
+};
+var elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
+var surprisetalk$elm_bulma$Bulma$CDN$stylesheet = A3(
+	elm$html$Html$node,
+	'link',
+	_List_fromArray(
+		[
+			elm$html$Html$Attributes$rel('stylesheet'),
+			elm$html$Html$Attributes$href('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+		]),
+	_List_Nil);
+var surprisetalk$elm_bulma$Bulma$Classes$container = elm$html$Html$Attributes$class('container');
+var surprisetalk$elm_bulma$Bulma$Layout$container = A2(
+	surprisetalk$elm_bulma$Helpers$node,
+	'div',
+	_List_fromArray(
+		[surprisetalk$elm_bulma$Bulma$Classes$container]));
+var author$project$View$view = function (model) {
+	return {
+		bk: _List_fromArray(
+			[
+				A2(
+				surprisetalk$elm_bulma$Bulma$Layout$container,
 				_List_Nil,
 				_List_fromArray(
 					[
-						A2(
-						elm$html$Html$div,
+						surprisetalk$elm_bulma$Bulma$CDN$stylesheet,
+						A3(
+						surprisetalk$elm_bulma$Bulma$Columns$column,
+						surprisetalk$elm_bulma$Bulma$Columns$columnModifiers,
 						_List_Nil,
 						_List_fromArray(
 							[
-								A3(author$project$Main$requiredInput, 'owner', author$project$Main$UpdateOwner, model.a.w),
-								A2(elm$html$Html$br, _List_Nil, _List_Nil),
-								A3(author$project$Main$requiredInput, 'name', author$project$Main$UpdateName, model.a.v),
-								A2(elm$html$Html$br, _List_Nil, _List_Nil),
-								A3(
-								author$project$Main$requiredInput,
-								'branch',
-								author$project$Main$UpdateBranch,
-								toBranch(model.a.y)),
-								A2(elm$html$Html$br, _List_Nil, _List_Nil),
-								A3(author$project$Main$requiredInput, 'apiToken', author$project$Main$UpdateApiToken, model.a.s)
-							])),
-						A2(
-						elm$html$Html$div,
-						_List_Nil,
-						A2(
-							elm$core$List$map,
-							function (_n0) {
-								var l = _n0.a;
-								var n = _n0.b;
-								return A2(
-									elm$html$Html$div,
-									_List_Nil,
-									_List_fromArray(
-										[
-											A2(
-											author$project$Main$labeledText,
-											l,
-											n(model.a))
-										]));
-							},
-							_List_fromArray(
-								[
-									_Utils_Tuple2(
-									'owner',
-									function ($) {
-										return $.w;
-									}),
-									_Utils_Tuple2(
-									'name',
-									function ($) {
-										return $.v;
-									}),
-									_Utils_Tuple2(
-									'qualifiedName',
-									function ($) {
-										return $.y;
-									}),
-									_Utils_Tuple2(
-									'apiToken',
-									function ($) {
-										return $.s;
-									})
-								]))),
-						A2(
-						elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$button,
-								_List_fromArray(
-									[
-										elm$html$Html$Events$onClick(author$project$Main$SendCommitSummaryRequest),
-										elm$html$Html$Attributes$disabled(!model.z)
-									]),
-								_List_fromArray(
-									[
-										elm$html$Html$text('get first commit')
-									]))
-							])),
-						A2(
-						elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
+								author$project$View$inputRegion(model),
+								author$project$View$previewRegion(model),
+								author$project$View$getFirstCommitButton(model.H),
 								function () {
-								var _n1 = model.C;
-								switch (_n1) {
+								var _n0 = model.N;
+								switch (_n0) {
 									case 0:
 										return elm$html$Html$text('');
 									case 3:
-										var _n2 = model.U;
-										if (!_n2.$) {
-											var v = _n2.a;
-											return author$project$Main$resultView(v);
+										var _n1 = model.as;
+										if (!_n1.$) {
+											var v = _n1.a;
+											return author$project$View$resultView(v);
 										} else {
-											return elm$html$Html$text('Cannot find');
+											return A2(
+												elm$html$Html$div,
+												_List_Nil,
+												_List_fromArray(
+													[
+														elm$html$Html$text('Cannot find')
+													]));
 										}
 									default:
-										return elm$html$Html$text('fetching...');
+										return A2(
+											elm$html$Html$div,
+											_List_Nil,
+											_List_fromArray(
+												[
+													elm$html$Html$text('fetching...')
+												]));
 								}
 							}()
 							]))
 					]))
 			]),
-		bd: 'firstcommit'
+		bQ: 'firstcommit'
 	};
 };
 var elm$browser$Browser$External = function (a) {
@@ -7773,7 +8360,7 @@ var elm$core$String$left = F2(
 var elm$core$String$toInt = _String_toInt;
 var elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {aq: fragment, ar: host, av: path, ax: port_, aA: protocol, aB: query};
+		return {aW: fragment, aX: host, a1: path, a3: port_, a6: protocol, a7: query};
 	});
 var elm$url$Url$chompBeforePath = F5(
 	function (protocol, path, params, frag, str) {
@@ -7882,12 +8469,12 @@ var elm$core$Platform$Sub$batch = _Platform_batch;
 var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$main = elm$browser$Browser$document(
 	{
-		a1: author$project$Main$init,
-		bb: function (_n0) {
+		bE: author$project$Main$init,
+		bO: function (_n0) {
 			return elm$core$Platform$Sub$none;
 		},
-		bf: author$project$Main$update,
-		bi: author$project$Main$view
+		bS: author$project$Main$update,
+		bV: author$project$View$view
 	});
 _Platform_export({'Main':{'init':author$project$Main$main(
 	elm$json$Json$Decode$succeed(0))(0)}});}(this));
