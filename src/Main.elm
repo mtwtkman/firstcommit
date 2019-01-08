@@ -1,17 +1,15 @@
-module Main exposing (Msg(..), init, main, update, view)
+module Main exposing (main)
 
 import Browser as Browser
-import Debug exposing (log)
 import GraphQL.Client.Http as GraphQLClient
 import GraphQL.Request.Builder exposing (..)
 import Helper exposing (..)
-import Html exposing (Html, a, br, button, div, input, text)
-import Html.Attributes exposing (disabled, href, placeholder, value)
-import Html.Events exposing (onClick, onInput)
 import Http exposing (header)
+import Msg exposing (..)
 import Query.Request exposing (..)
 import Task exposing (Task)
 import Type exposing (..)
+import View exposing (view)
 
 
 main =
@@ -21,14 +19,6 @@ main =
         , update = update
         , subscriptions = \_ -> Sub.none
         }
-
-
-type alias CommitSummaryResponse =
-    Result GraphQLClient.Error (Maybe CommitSummary)
-
-
-type alias InitialCommitResponse =
-    Result GraphQLClient.Error (Maybe (List InitialCommit))
 
 
 init : () -> ( Model, Cmd Msg )
@@ -48,20 +38,6 @@ init _ =
       }
     , Cmd.none
     )
-
-
-
--- UPDATE
-
-
-type Msg
-    = UpdateOwner String
-    | UpdateName String
-    | UpdateBranch String
-    | UpdateApiToken String
-    | SendCommitSummaryRequest
-    | ReceiveCommitSummaryResponse CommitSummaryResponse
-    | ReceiveInitialCommitResponse InitialCommitResponse
 
 
 sendOption : String -> GraphQLClient.RequestOptions
@@ -189,90 +165,3 @@ update msg model =
               }
             , Cmd.none
             )
-
-
-
--- VIEW
-
-
-view : Model -> Browser.Document Msg
-view model =
-    let
-        toBranch : Maybe String -> Maybe String
-        toBranch qualifiedName =
-            let
-                f : String -> Maybe String
-                f =
-                    \s -> String.split "/" s |> List.reverse |> List.head
-            in
-            Maybe.andThen f qualifiedName
-    in
-    { title = "firstcommit"
-    , body =
-        [ div []
-            [ div []
-                [ requiredInput "owner" UpdateOwner model.form.owner
-                , br [] []
-                , requiredInput "name" UpdateName model.form.name
-                , br [] []
-                , requiredInput "branch" UpdateBranch (toBranch model.form.qualifiedName)
-                , br [] []
-                , requiredInput "apiToken" UpdateApiToken model.form.apiToken
-                ]
-            , div []
-                (List.map
-                    (\( l, n ) -> div [] [ labeledText l (n model.form) ])
-                    [ ( "owner", .owner ), ( "name", .name ), ( "qualifiedName", .qualifiedName ), ( "apiToken", .apiToken ) ]
-                )
-            , div []
-                [ button [ onClick SendCommitSummaryRequest, disabled (not model.sendable) ] [ text "get first commit" ]
-                ]
-            , div []
-                [ case model.fetching of
-                    NotFetching ->
-                        text ""
-
-                    Done ->
-                        case model.initialCommit of
-                            Just v ->
-                                resultView v
-
-                            Nothing ->
-                                text "Cannot find"
-
-                    _ ->
-                        text "fetching..."
-                ]
-            ]
-        ]
-    }
-
-
-requiredInput : String -> (String -> msg) -> Maybe String -> Html msg
-requiredInput ph msg val =
-    div []
-        [ input [ placeholder ph, onInput msg, value (unwrap val) ] []
-        , text <|
-            case val of
-                Just _ ->
-                    ""
-
-                Nothing ->
-                    "required"
-        ]
-
-
-labeledText : String -> Maybe String -> Html msg
-labeledText label value =
-    text (label ++ ": " ++ Maybe.withDefault "" value)
-
-
-resultView : InitialCommit -> Html msg
-resultView v =
-    div []
-        [ div []
-            [ a [ href v.commitUrl ]
-                [ "commitUrl: " ++ v.commitUrl |> text ]
-            ]
-        , div [] [ "message: " ++ v.message |> text ]
-        ]
