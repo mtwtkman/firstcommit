@@ -7709,13 +7709,13 @@ var surprisetalk$elm_bulma$Bulma$Modifiers$Blur = 0;
 var surprisetalk$elm_bulma$Bulma$Modifiers$Default = 0;
 var surprisetalk$elm_bulma$Bulma$Modifiers$Standard = 1;
 var surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers = {bp: 0, bt: false, aq: elm$core$Maybe$Nothing, ar: elm$core$Maybe$Nothing, at: false, aA: false, aC: false, o: 1, b: 0, aG: false};
-var surprisetalk$elm_bulma$Bulma$Modifiers$Primary = 5;
+var surprisetalk$elm_bulma$Bulma$Modifiers$Link = 6;
 var author$project$View$getFirstCommitButton = function (sendable) {
 	return A3(
 		surprisetalk$elm_bulma$Bulma$Elements$button,
 		_Utils_update(
 			surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers,
-			{bp: 5, bt: sendable}),
+			{bp: 6, bt: !sendable}),
 		_List_fromArray(
 			[
 				elm$html$Html$Events$onClick(author$project$Msg$SendCommitSummaryRequest)
@@ -7737,8 +7737,6 @@ var author$project$Msg$UpdateName = function (a) {
 var author$project$Msg$UpdateOwner = function (a) {
 	return {$: 0, a: a};
 };
-var elm$html$Html$div = _VirtualDom_node('div');
-var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$html$Html$Events$alwaysStop = function (x) {
@@ -7772,31 +7770,272 @@ var elm$html$Html$Events$onInput = function (tagger) {
 			elm$html$Html$Events$alwaysStop,
 			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
+var elm$html$Html$Attributes$readonly = elm$html$Html$Attributes$boolProperty('readOnly');
+var surprisetalk$elm_bulma$Bulma$Classes$input = elm$html$Html$Attributes$class('input');
+var surprisetalk$elm_bulma$Bulma$Classes$control = elm$html$Html$Attributes$class('control');
+var surprisetalk$elm_bulma$Bulma$Classes$hasIconsLeft = elm$html$Html$Attributes$class('has-icons-left');
+var surprisetalk$elm_bulma$Bulma$Classes$hasIconsRight = elm$html$Html$Attributes$class('has-icons-right');
+var surprisetalk$elm_bulma$Bulma$Classes$isExpanded = elm$html$Html$Attributes$class('is-expanded');
+var surprisetalk$elm_bulma$Bulma$Form$control = F3(
+	function (_n0, attrs, htmls) {
+		var loading = _n0.B;
+		var expanded = _n0.i;
+		var iconLeft = _n0.aq;
+		var iconRight = _n0.ar;
+		return A4(
+			surprisetalk$elm_bulma$Helpers$node,
+			'p',
+			_List_fromArray(
+				[
+					surprisetalk$elm_bulma$Bulma$Classes$control,
+					function () {
+					if (!loading.$) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isLoading;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					_n2$3:
+					while (true) {
+						if (!loading.$) {
+							switch (loading.a) {
+								case 0:
+									var _n3 = loading.a;
+									return surprisetalk$elm_bulma$Bulma$Classes$isSmall;
+								case 2:
+									var _n4 = loading.a;
+									return surprisetalk$elm_bulma$Bulma$Classes$isMedium;
+								case 3:
+									var _n5 = loading.a;
+									return surprisetalk$elm_bulma$Bulma$Classes$isLarge;
+								default:
+									break _n2$3;
+							}
+						} else {
+							break _n2$3;
+						}
+					}
+					return surprisetalk$elm_bulma$Bulma$Classes$none;
+				}(),
+					function () {
+					if (expanded) {
+						return surprisetalk$elm_bulma$Bulma$Classes$isExpanded;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (!iconLeft.$) {
+						return surprisetalk$elm_bulma$Bulma$Classes$hasIconsLeft;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}(),
+					function () {
+					if (!iconRight.$) {
+						return surprisetalk$elm_bulma$Bulma$Classes$hasIconsRight;
+					} else {
+						return surprisetalk$elm_bulma$Bulma$Classes$none;
+					}
+				}()
+				]),
+			attrs,
+			_Utils_ap(
+				htmls,
+				_Utils_ap(
+					A2(
+						elm$core$Maybe$withDefault,
+						_List_Nil,
+						A2(
+							elm$core$Maybe$map,
+							function (_n9) {
+								var size_ = _n9.a;
+								var attrs_ = _n9.b;
+								var iconBody = _n9.c;
+								return _List_fromArray(
+									[
+										A3(
+										surprisetalk$elm_bulma$Bulma$Elements$icon,
+										size_,
+										A2(
+											elm$core$List$cons,
+											elm$html$Html$Attributes$class('is-left'),
+											attrs_),
+										_List_fromArray(
+											[iconBody]))
+									]);
+							},
+							iconLeft)),
+					_Utils_ap(
+						A2(
+							elm$core$Maybe$withDefault,
+							_List_Nil,
+							A2(
+								elm$core$Maybe$map,
+								function (_n10) {
+									var size_ = _n10.a;
+									var attrs_ = _n10.b;
+									var iconBody = _n10.c;
+									return _List_fromArray(
+										[
+											A3(
+											surprisetalk$elm_bulma$Bulma$Elements$icon,
+											size_,
+											A2(
+												elm$core$List$cons,
+												elm$html$Html$Attributes$class('is-right'),
+												attrs_),
+											_List_fromArray(
+												[iconBody]))
+										]);
+								},
+								iconRight)),
+						_List_Nil))));
+	});
+var surprisetalk$elm_bulma$Helpers$ls = function (x) {
+	return _List_fromArray(
+		[x]);
+};
+var surprisetalk$elm_bulma$Bulma$Form$controlInput = F3(
+	function (mods, attrs, attrs_) {
+		var size = mods.o;
+		var state = mods.b;
+		var color = mods.bp;
+		var expanded = mods.i;
+		var rounded = mods.aC;
+		var readonly = mods.F;
+		var disabled = mods.bt;
+		var iconLeft = mods.aq;
+		var iconRight = mods.ar;
+		var controlMods = {
+			i: expanded,
+			aq: iconLeft,
+			ar: iconRight,
+			B: function () {
+				if (state === 4) {
+					return elm$core$Maybe$Just(size);
+				} else {
+					return elm$core$Maybe$Nothing;
+				}
+			}()
+		};
+		return A2(
+			elm$core$Basics$composeL,
+			A2(
+				elm$core$Basics$composeL,
+				A2(surprisetalk$elm_bulma$Bulma$Form$control, controlMods, attrs),
+				surprisetalk$elm_bulma$Helpers$ls),
+			A3(
+				surprisetalk$elm_bulma$Helpers$node,
+				'input',
+				_List_fromArray(
+					[
+						surprisetalk$elm_bulma$Bulma$Classes$input,
+						elm$html$Html$Attributes$disabled(disabled),
+						function () {
+						if (readonly) {
+							return elm$html$Html$Attributes$readonly(readonly);
+						} else {
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						}
+					}(),
+						function () {
+						switch (size) {
+							case 0:
+								return surprisetalk$elm_bulma$Bulma$Classes$isSmall;
+							case 1:
+								return surprisetalk$elm_bulma$Bulma$Classes$none;
+							case 2:
+								return surprisetalk$elm_bulma$Bulma$Classes$isMedium;
+							default:
+								return surprisetalk$elm_bulma$Bulma$Classes$isLarge;
+						}
+					}(),
+						function () {
+						switch (state) {
+							case 1:
+								return surprisetalk$elm_bulma$Bulma$Classes$isHovered;
+							case 2:
+								return surprisetalk$elm_bulma$Bulma$Classes$isFocused;
+							case 3:
+								return surprisetalk$elm_bulma$Bulma$Classes$isActive;
+							case 4:
+								return surprisetalk$elm_bulma$Bulma$Classes$isLoading;
+							default:
+								return surprisetalk$elm_bulma$Bulma$Classes$none;
+						}
+					}(),
+						function () {
+						switch (color) {
+							case 0:
+								return surprisetalk$elm_bulma$Bulma$Classes$none;
+							case 1:
+								return surprisetalk$elm_bulma$Bulma$Classes$isWhite;
+							case 2:
+								return surprisetalk$elm_bulma$Bulma$Classes$isLight;
+							case 3:
+								return surprisetalk$elm_bulma$Bulma$Classes$isDark;
+							case 4:
+								return surprisetalk$elm_bulma$Bulma$Classes$isBlack;
+							case 5:
+								return surprisetalk$elm_bulma$Bulma$Classes$isPrimary;
+							case 7:
+								return surprisetalk$elm_bulma$Bulma$Classes$isInfo;
+							case 8:
+								return surprisetalk$elm_bulma$Bulma$Classes$isSuccess;
+							case 9:
+								return surprisetalk$elm_bulma$Bulma$Classes$isWarning;
+							case 10:
+								return surprisetalk$elm_bulma$Bulma$Classes$isDanger;
+							default:
+								return surprisetalk$elm_bulma$Bulma$Classes$isLink;
+						}
+					}(),
+						function () {
+						if (!rounded) {
+							return surprisetalk$elm_bulma$Bulma$Classes$none;
+						} else {
+							return surprisetalk$elm_bulma$Bulma$Classes$isRounded;
+						}
+					}()
+					]),
+				attrs_));
+	});
+var surprisetalk$elm_bulma$Bulma$Form$controlInputModifiers = {bp: 0, bt: false, i: false, aq: elm$core$Maybe$Nothing, ar: elm$core$Maybe$Nothing, F: false, aC: false, o: 1, b: 0};
+var surprisetalk$elm_bulma$Bulma$Classes$field = elm$html$Html$Attributes$class('field');
+var surprisetalk$elm_bulma$Bulma$Form$field = A2(
+	surprisetalk$elm_bulma$Helpers$node,
+	'div',
+	_List_fromArray(
+		[surprisetalk$elm_bulma$Bulma$Classes$field]));
 var author$project$View$requiredInput = F3(
 	function (ph, msg, val) {
+		var color = function () {
+			if (!val.$) {
+				return 'is-primary';
+			} else {
+				return 'is-danger';
+			}
+		}();
 		return A2(
-			elm$html$Html$div,
+			surprisetalk$elm_bulma$Bulma$Form$field,
 			_List_Nil,
 			_List_fromArray(
 				[
-					A2(
-					elm$html$Html$input,
+					A4(
+					surprisetalk$elm_bulma$Bulma$Form$controlInput,
+					surprisetalk$elm_bulma$Bulma$Form$controlInputModifiers,
+					_List_Nil,
 					_List_fromArray(
 						[
 							elm$html$Html$Events$onInput(msg),
 							elm$html$Html$Attributes$placeholder(ph),
 							elm$html$Html$Attributes$value(
-							author$project$Helper$unwrap(val))
+							author$project$Helper$unwrap(val)),
+							elm$html$Html$Attributes$class(color)
 						]),
-					_List_Nil),
-					elm$html$Html$text(
-					function () {
-						if (!val.$) {
-							return '';
-						} else {
-							return 'required';
-						}
-					}())
+					_List_Nil)
 				]));
 	});
 var elm$core$Maybe$andThen = F2(
@@ -7808,6 +8047,109 @@ var elm$core$Maybe$andThen = F2(
 			return elm$core$Maybe$Nothing;
 		}
 	});
+var elm$html$Html$div = _VirtualDom_node('div');
+var author$project$View$inputRegion = function (model) {
+	var toBranch = function (qualifiedName) {
+		var f = function (s) {
+			return elm$core$List$head(
+				elm$core$List$reverse(
+					A2(elm$core$String$split, '/', s)));
+		};
+		return A2(elm$core$Maybe$andThen, f, qualifiedName);
+	};
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A3(author$project$View$requiredInput, 'owner', author$project$Msg$UpdateOwner, model.d.Q),
+				A3(author$project$View$requiredInput, 'name', author$project$Msg$UpdateName, model.d.P),
+				A3(
+				author$project$View$requiredInput,
+				'branch',
+				author$project$Msg$UpdateBranch,
+				toBranch(model.d.R)),
+				A3(author$project$View$requiredInput, 'apiToken', author$project$Msg$UpdateApiToken, model.d.M)
+			]));
+};
+var author$project$View$previewRegion = function (model) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		A2(
+			elm$core$List$map,
+			function (_n0) {
+				var l = _n0.a;
+				var f = _n0.b;
+				return A2(
+					elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							l + (': ' + author$project$Helper$unwrap(
+								f(model.d))))
+						]));
+			},
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'owner',
+					function ($) {
+						return $.Q;
+					}),
+					_Utils_Tuple2(
+					'name',
+					function ($) {
+						return $.P;
+					}),
+					_Utils_Tuple2(
+					'qualifiedName',
+					function ($) {
+						return $.R;
+					}),
+					_Utils_Tuple2(
+					'apiToken',
+					function ($) {
+						return $.M;
+					})
+				])));
+};
+var elm$html$Html$a = _VirtualDom_node('a');
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var author$project$View$resultView = function (v) {
+	return A2(
+		elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$a,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$href(v.br)
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text(v.bH)
+					]))
+			]));
+};
+var elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
+var surprisetalk$elm_bulma$Bulma$CDN$stylesheet = A3(
+	elm$html$Html$node,
+	'link',
+	_List_fromArray(
+		[
+			elm$html$Html$Attributes$rel('stylesheet'),
+			elm$html$Html$Attributes$href('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+		]),
+	_List_Nil);
 var surprisetalk$elm_bulma$Bulma$Classes$column = elm$html$Html$Attributes$class('column');
 var surprisetalk$elm_bulma$Bulma$Classes$is01Desktop = elm$html$Html$Attributes$class('is-1-desktop');
 var surprisetalk$elm_bulma$Bulma$Classes$is01FullHD = elm$html$Html$Attributes$class('is-1-fullhd');
@@ -8155,109 +8497,6 @@ var surprisetalk$elm_bulma$Bulma$Columns$columnModifiers = {
 		aM: elm$core$Maybe$Just(0)
 	}
 };
-var author$project$View$inputRegion = function (model) {
-	var toBranch = function (qualifiedName) {
-		var f = function (s) {
-			return elm$core$List$head(
-				elm$core$List$reverse(
-					A2(elm$core$String$split, '/', s)));
-		};
-		return A2(elm$core$Maybe$andThen, f, qualifiedName);
-	};
-	return A3(
-		surprisetalk$elm_bulma$Bulma$Columns$column,
-		surprisetalk$elm_bulma$Bulma$Columns$columnModifiers,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A3(author$project$View$requiredInput, 'owner', author$project$Msg$UpdateOwner, model.d.Q),
-				A3(author$project$View$requiredInput, 'name', author$project$Msg$UpdateName, model.d.P),
-				A3(
-				author$project$View$requiredInput,
-				'branch',
-				author$project$Msg$UpdateBranch,
-				toBranch(model.d.R)),
-				A3(author$project$View$requiredInput, 'apiToken', author$project$Msg$UpdateApiToken, model.d.M)
-			]));
-};
-var author$project$View$previewRegion = function (model) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		A2(
-			elm$core$List$map,
-			function (_n0) {
-				var l = _n0.a;
-				var f = _n0.b;
-				return A2(
-					elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							l + (': ' + author$project$Helper$unwrap(
-								f(model.d))))
-						]));
-			},
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'owner',
-					function ($) {
-						return $.Q;
-					}),
-					_Utils_Tuple2(
-					'name',
-					function ($) {
-						return $.P;
-					}),
-					_Utils_Tuple2(
-					'qualifiedName',
-					function ($) {
-						return $.R;
-					}),
-					_Utils_Tuple2(
-					'apiToken',
-					function ($) {
-						return $.M;
-					})
-				])));
-};
-var elm$html$Html$a = _VirtualDom_node('a');
-var elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var author$project$View$resultView = function (v) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$a,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$href(v.br)
-					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(v.bH)
-					]))
-			]));
-};
-var elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
-var surprisetalk$elm_bulma$Bulma$CDN$stylesheet = A3(
-	elm$html$Html$node,
-	'link',
-	_List_fromArray(
-		[
-			elm$html$Html$Attributes$rel('stylesheet'),
-			elm$html$Html$Attributes$href('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
-		]),
-	_List_Nil);
 var surprisetalk$elm_bulma$Bulma$Classes$container = elm$html$Html$Attributes$class('container');
 var surprisetalk$elm_bulma$Bulma$Layout$container = A2(
 	surprisetalk$elm_bulma$Helpers$node,
@@ -8277,7 +8516,10 @@ var author$project$View$view = function (model) {
 						A3(
 						surprisetalk$elm_bulma$Bulma$Columns$column,
 						surprisetalk$elm_bulma$Bulma$Columns$columnModifiers,
-						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('is-half is-offset-one-quarter')
+							]),
 						_List_fromArray(
 							[
 								author$project$View$inputRegion(model),
