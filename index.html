@@ -794,11 +794,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.aF.O === region.aU.O)
+	if (region.aG.O === region.aV.O)
 	{
-		return 'on line ' + region.aF.O;
+		return 'on line ' + region.aG.O;
 	}
-	return 'on lines ' + region.aF.O + ' through ' + region.aU.O;
+	return 'on lines ' + region.aG.O + ' through ' + region.aV.O;
 }
 
 
@@ -2341,7 +2341,7 @@ var _Http_toTask = F2(function(request, maybeProgress)
 			callback(_Scheduler_fail(elm$http$Http$Timeout));
 		});
 		xhr.addEventListener('load', function() {
-			callback(_Http_handleResponse(xhr, request.al.a));
+			callback(_Http_handleResponse(xhr, request.am.a));
 		});
 
 		try
@@ -2355,7 +2355,7 @@ var _Http_toTask = F2(function(request, maybeProgress)
 
 		_Http_configureRequest(xhr, request);
 
-		var body = request.bk;
+		var body = request.bl;
 		xhr.send(elm$http$Http$Internal$isStringBody(body)
 			? (xhr.setRequestHeader('Content-Type', body.a), body.b)
 			: body.a
@@ -2378,8 +2378,8 @@ function _Http_configureProgress(xhr, maybeProgress)
 			return;
 		}
 		_Scheduler_rawSpawn(maybeProgress.a({
-			bl: event.loaded,
-			bm: event.total
+			bm: event.loaded,
+			bn: event.total
 		}));
 	});
 }
@@ -2391,7 +2391,7 @@ function _Http_configureRequest(xhr, request)
 		xhr.setRequestHeader(headers.a.a, headers.a.b);
 	}
 
-	xhr.responseType = request.al.b;
+	xhr.responseType = request.am.b;
 	xhr.withCredentials = request.bW;
 
 	elm$core$Maybe$isJust(request.bP) && (xhr.timeout = request.bP.a);
@@ -2427,9 +2427,9 @@ function _Http_toResponse(xhr)
 {
 	return {
 		bT: xhr.responseURL,
-		bN: { bo: xhr.status, bH: xhr.statusText },
+		bN: { bp: xhr.status, bH: xhr.statusText },
 		bB: _Http_parseHeaders(xhr.getAllResponseHeaders()),
-		bk: xhr.response
+		bl: xhr.response
 	};
 }
 
@@ -2869,8 +2869,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		bH: func(record.bH),
-		aH: record.aH,
-		aB: record.aB
+		aI: record.aI,
+		aC: record.aC
 	}
 });
 
@@ -3139,10 +3139,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.bH;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aH;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aI;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.aB) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.aC) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -4141,7 +4141,7 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bk);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bl);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
@@ -4223,9 +4223,9 @@ function _Browser_application(impl)
 					var next = elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.a6 === next.a6
-							&& curr.aX === next.aX
-							&& curr.a3.a === next.a3.a
+							&& curr.a7 === next.a7
+							&& curr.aY === next.aY
+							&& curr.a4.a === next.a4.a
 						)
 							? elm$browser$Browser$Internal(next)
 							: elm$browser$Browser$External(href)
@@ -4305,17 +4305,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { bC: 'hidden', bn: 'visibilitychange' }
+		? { bC: 'hidden', bo: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { bC: 'mozHidden', bn: 'mozvisibilitychange' }
+		? { bC: 'mozHidden', bo: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { bC: 'msHidden', bn: 'msvisibilitychange' }
+		? { bC: 'msHidden', bo: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { bC: 'webkitHidden', bn: 'webkitvisibilitychange' }
-		: { bC: 'hidden', bn: 'visibilitychange' };
+		? { bC: 'webkitHidden', bo: 'webkitvisibilitychange' }
+		: { bC: 'hidden', bo: 'visibilitychange' };
 }
 
 
@@ -4396,8 +4396,8 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		bb: _Browser_getScene(),
-		bg: {
+		bc: _Browser_getScene(),
+		bh: {
 			ad: _Browser_window.pageXOffset,
 			ae: _Browser_window.pageYOffset,
 			K: _Browser_doc.documentElement.clientWidth,
@@ -4435,11 +4435,11 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			bb: {
+			bc: {
 				K: node.scrollWidth,
 				A: node.scrollHeight
 			},
-			bg: {
+			bh: {
 				ad: node.scrollLeft,
 				ae: node.scrollTop,
 				K: node.clientWidth,
@@ -4473,8 +4473,8 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			bb: _Browser_getScene(),
-			bg: {
+			bc: _Browser_getScene(),
+			bh: {
 				ad: x,
 				ae: y,
 				K: _Browser_doc.documentElement.clientWidth,
@@ -5005,7 +5005,7 @@ var author$project$Main$init = function (_n0) {
 		R: elm$core$Maybe$Just('refs/heads/master')
 	};
 	return _Utils_Tuple2(
-		{N: 0, d: form, as: elm$core$Maybe$Nothing, H: false},
+		{N: 0, d: form, at: elm$core$Maybe$Nothing, H: false},
 		elm$core$Platform$Cmd$none);
 };
 var elm$core$String$isEmpty = function (string) {
@@ -5816,7 +5816,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Response$RequestError = F2(
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var jamesmacaulay$elm_graphql$GraphQL$Response$DocumentLocation = F2(
 	function (line, column) {
-		return {bq: column, O: line};
+		return {br: column, O: line};
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Response$documentLocationDecoder = A3(
 	elm$json$Json$Decode$map2,
@@ -5851,10 +5851,10 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$convertHttpError = F3(
 		};
 		switch (httpError.$) {
 			case 3:
-				var body = httpError.a.bk;
+				var body = httpError.a.bl;
 				return handleErrorWithResponseBody(body);
 			case 4:
-				var body = httpError.b.bk;
+				var body = httpError.b.bl;
 				return handleErrorWithResponseBody(body);
 			default:
 				return wrapHttpError(httpError);
@@ -5953,7 +5953,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$requestConfig = F4(
 			A2(jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$postBody, documentString, variableValues));
 		var url = _n0.a;
 		var body = _n0.b;
-		return {bk: body, al: expect, bB: requestOptions.bB, bI: requestOptions.bI, bP: requestOptions.bP, bT: url, bW: requestOptions.bW};
+		return {bl: body, am: expect, bB: requestOptions.bB, bI: requestOptions.bI, bP: requestOptions.bP, bT: url, bW: requestOptions.bW};
 	});
 var elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
@@ -6025,12 +6025,12 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableValuesToJson = fun
 				kvPairs)));
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$jsonVariableValues = function (_n0) {
-	var variableValues = _n0.bf;
+	var variableValues = _n0.bg;
 	return jamesmacaulay$elm_graphql$GraphQL$Request$Builder$variableValuesToJson(variableValues);
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$requestBody = function (_n0) {
 	var requestRecord = _n0;
-	return requestRecord.aT;
+	return requestRecord.aU;
 };
 var jamesmacaulay$elm_graphql$GraphQL$Client$Http$sendExpecting = F3(
 	function (expect, requestOptions, request) {
@@ -6047,7 +6047,7 @@ var elm$http$Http$expectStringResponse = _Http_expectStringResponse;
 var elm$http$Http$expectJson = function (decoder) {
 	return elm$http$Http$expectStringResponse(
 		function (response) {
-			var _n0 = A2(elm$json$Json$Decode$decodeString, decoder, response.bk);
+			var _n0 = A2(elm$json$Json$Decode$decodeString, decoder, response.bl);
 			if (_n0.$ === 1) {
 				var decodeError = _n0.a;
 				return elm$core$Result$Err(
@@ -6064,7 +6064,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Client$Http$Util$defaultExpect = A2(
 	elm$json$Json$Decode$field('data'));
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$responseDataDecoder = function (_n0) {
 	var requestRecord = _n0;
-	return requestRecord.ba;
+	return requestRecord.bb;
 };
 var jamesmacaulay$elm_graphql$GraphQL$Client$Http$send = F2(
 	function (options, request) {
@@ -6202,7 +6202,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$ValueSpec = F4(
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$NonNullFlag = 1;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$nonNullFlag = 1;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Util$responseKey = function (fieldInfo) {
-	var _n0 = fieldInfo.aO;
+	var _n0 = fieldInfo.aP;
 	if (_n0.$ === 1) {
 		return fieldInfo.P;
 	} else {
@@ -6304,15 +6304,15 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$toDefinitionAST =
 	if (!_var.$) {
 		var variableName = _var.a;
 		var typeRef = _var.b;
-		return {aS: elm$core$Maybe$Nothing, P: variableName, be: typeRef};
+		return {aT: elm$core$Maybe$Nothing, P: variableName, bf: typeRef};
 	} else {
 		var variableName = _var.a;
 		var typeRef = _var.b;
 		var defaultValue = _var.d;
 		return {
-			aS: elm$core$Maybe$Just(defaultValue),
+			aT: elm$core$Maybe$Just(defaultValue),
 			P: variableName,
-			be: typeRef
+			bf: typeRef
 		};
 	}
 };
@@ -6359,8 +6359,8 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$field = F3(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$varsFromArguments(_arguments),
 			fieldVars);
 		var astFieldInfo = {
-			aO: elm$core$Maybe$Nothing,
-			aP: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
+			aP: elm$core$Maybe$Nothing,
+			aQ: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
 			g: _List_Nil,
 			P: name,
 			f: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$selectionSetFromSourceType(sourceType)
@@ -6391,7 +6391,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$directiveAST = function (_
 	var name = _n0.a;
 	var _arguments = _n0.b;
 	return {
-		aP: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
+		aQ: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$argumentsAST(_arguments),
 		P: name
 	};
 };
@@ -6597,7 +6597,7 @@ var author$project$Query$Var$firstVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$int);
 var author$project$Type$CommitSummary = F2(
 	function (cursor, totalCount) {
-		return {bs: cursor, bR: totalCount};
+		return {bt: cursor, bR: totalCount};
 	});
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$IntType = 0;
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$primitiveSpec = F2(
@@ -6779,7 +6779,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDi
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDirective = function (_n0) {
 	var name = _n0.P;
-	var _arguments = _n0.aP;
+	var _arguments = _n0.aQ;
 	return A2(
 		elm$core$String$join,
 		'',
@@ -6838,7 +6838,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFi
 					_List_fromArray(
 						[
 							jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(
-							A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFieldAlias, field.aO)),
+							A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFieldAlias, field.aP)),
 							_List_fromArray(
 							[
 								A2(
@@ -6847,7 +6847,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeFi
 								A2(
 									elm$core$List$cons,
 									field.P,
-									jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeArgList(field.aP)))
+									jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeArgList(field.aQ)))
 							]),
 							A2(elm$core$List$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDirective, field.g),
 							A2(jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeSelectionSet, indentLevel, field.f)
@@ -6972,10 +6972,10 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVa
 					_List_fromArray(
 					[
 						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableName(info.P) + ':',
-						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeTypeRef(info.be)
+						jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeTypeRef(info.bf)
 					]),
 					jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$listFromMaybe(
-					A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDefaultValue, info.aS))
+					A2(elm$core$Maybe$map, jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDefaultValue, info.aT))
 				])));
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeVariableDefinitions = function (defs) {
@@ -7039,7 +7039,7 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$document = function (opera
 	return {
 		af: ast,
 		_: operation,
-		aE: jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDocument(ast)
+		aF: jamesmacaulay$elm_graphql$GraphQL$Request$Document$AST$Serialize$serializeDocument(ast)
 	};
 };
 var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$QueryOperationType = 0;
@@ -7120,12 +7120,12 @@ var jamesmacaulay$elm_graphql$GraphQL$Request$Builder$request = F2(
 	function (vars, doc) {
 		var operation = doc._;
 		var ast = doc.af;
-		var serialized = doc.aE;
+		var serialized = doc.aF;
 		return {
 			bu: ast,
-			aT: serialized,
-			ba: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentResponseDecoder(doc),
-			bf: A2(
+			aU: serialized,
+			bb: jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentResponseDecoder(doc),
+			bg: A2(
 				jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$extractValuesFrom,
 				vars,
 				jamesmacaulay$elm_graphql$GraphQL$Request$Builder$documentVariables(doc))
@@ -7195,7 +7195,7 @@ var author$project$Query$Var$beforeVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$required,
 	'before',
 	function ($) {
-		return $.bj;
+		return $.bk;
 	},
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$string);
 var author$project$Query$Var$lastVar = A3(
@@ -7207,7 +7207,7 @@ var author$project$Query$Var$lastVar = A3(
 	jamesmacaulay$elm_graphql$GraphQL$Request$Builder$Variable$int);
 var author$project$Type$InitialCommit = F2(
 	function (commitUrl, message) {
-		return {br: commitUrl, bH: message};
+		return {bs: commitUrl, bH: message};
 	});
 var elm$core$List$head = function (list) {
 	if (list.b) {
@@ -7252,12 +7252,12 @@ var author$project$Query$Request$initialCommitRequest = F4(
 						A2(
 							elm$core$Maybe$withDefault,
 							'',
-							elm$core$List$head(commitSummary.bs)))),
+							elm$core$List$head(commitSummary.bt)))),
 				elm$core$Maybe$Just(
 					elm$core$String$fromInt(commitSummary.bR))));
 		return A2(
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$request,
-			{bj: before, bF: 1, P: name, Q: owner, R: qualifiedName},
+			{bk: before, bF: 1, P: name, Q: owner, R: qualifiedName},
 			jamesmacaulay$elm_graphql$GraphQL$Request$Builder$queryDocument(
 				A2(
 					author$project$Query$Request$buildRequest,
@@ -7386,7 +7386,7 @@ var author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{N: 2, as: elm$core$Maybe$Nothing}),
+							{N: 2, at: elm$core$Maybe$Nothing}),
 						A2(
 							author$project$Main$sendQueryCommitSummaryRequest,
 							author$project$Helper$unwrap(model.d.M),
@@ -7424,7 +7424,7 @@ var author$project$Main$update = F2(
 						model,
 						{
 							N: 3,
-							as: A2(
+							at: A2(
 								elm$core$Maybe$withDefault,
 								elm$core$Maybe$Nothing,
 								A2(
@@ -7450,6 +7450,14 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 };
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var elm$html$Html$Attributes$attribute = elm$virtual_dom$VirtualDom$attribute;
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
@@ -7544,16 +7552,16 @@ var surprisetalk$elm_bulma$Bulma$Elements$icon = function (size) {
 };
 var surprisetalk$elm_bulma$Bulma$Elements$button = F3(
 	function (_n0, attrs, htmls) {
-		var disabled = _n0.bt;
-		var outlined = _n0.aA;
-		var inverted = _n0.at;
-		var rounded = _n0.aC;
+		var disabled = _n0.ak;
+		var outlined = _n0.aB;
+		var inverted = _n0.au;
+		var rounded = _n0.aD;
 		var size = _n0.o;
 		var state = _n0.b;
-		var color = _n0.bp;
-		var _static = _n0.aG;
-		var iconLeft = _n0.aq;
-		var iconRight = _n0.ar;
+		var color = _n0.bq;
+		var _static = _n0.aH;
+		var iconLeft = _n0.ar;
+		var iconRight = _n0.as;
 		var iconRight_ = function () {
 			if (!iconRight.$) {
 				var _n13 = iconRight.a;
@@ -7708,18 +7716,29 @@ var surprisetalk$elm_bulma$Bulma$Elements$button = F3(
 var surprisetalk$elm_bulma$Bulma$Modifiers$Blur = 0;
 var surprisetalk$elm_bulma$Bulma$Modifiers$Default = 0;
 var surprisetalk$elm_bulma$Bulma$Modifiers$Standard = 1;
-var surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers = {bp: 0, bt: false, aq: elm$core$Maybe$Nothing, ar: elm$core$Maybe$Nothing, at: false, aA: false, aC: false, o: 1, b: 0, aG: false};
+var surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers = {bq: 0, ak: false, ar: elm$core$Maybe$Nothing, as: elm$core$Maybe$Nothing, au: false, aB: false, aD: false, o: 1, b: 0, aH: false};
 var surprisetalk$elm_bulma$Bulma$Modifiers$Link = 6;
 var author$project$View$getFirstCommitButton = function (sendable) {
+	var attrs = function () {
+		if (sendable) {
+			return _List_fromArray(
+				[
+					elm$html$Html$Events$onClick(author$project$Msg$SendCommitSummaryRequest)
+				]);
+		} else {
+			return _List_fromArray(
+				[
+					elm$html$Html$Events$onClick(author$project$Msg$SendCommitSummaryRequest),
+					A2(elm$html$Html$Attributes$attribute, 'disabled', '')
+				]);
+		}
+	}();
 	return A3(
 		surprisetalk$elm_bulma$Bulma$Elements$button,
 		_Utils_update(
 			surprisetalk$elm_bulma$Bulma$Elements$buttonModifiers,
-			{bp: 6, bt: !sendable}),
-		_List_fromArray(
-			[
-				elm$html$Html$Events$onClick(author$project$Msg$SendCommitSummaryRequest)
-			]),
+			{bq: 6}),
+		attrs,
 		_List_fromArray(
 			[
 				elm$html$Html$text('get first commit')
@@ -7780,8 +7799,8 @@ var surprisetalk$elm_bulma$Bulma$Form$control = F3(
 	function (_n0, attrs, htmls) {
 		var loading = _n0.B;
 		var expanded = _n0.i;
-		var iconLeft = _n0.aq;
-		var iconRight = _n0.ar;
+		var iconLeft = _n0.ar;
+		var iconRight = _n0.as;
 		return A4(
 			surprisetalk$elm_bulma$Helpers$node,
 			'p',
@@ -7901,17 +7920,17 @@ var surprisetalk$elm_bulma$Bulma$Form$controlInput = F3(
 	function (mods, attrs, attrs_) {
 		var size = mods.o;
 		var state = mods.b;
-		var color = mods.bp;
+		var color = mods.bq;
 		var expanded = mods.i;
-		var rounded = mods.aC;
+		var rounded = mods.aD;
 		var readonly = mods.F;
-		var disabled = mods.bt;
-		var iconLeft = mods.aq;
-		var iconRight = mods.ar;
+		var disabled = mods.ak;
+		var iconLeft = mods.ar;
+		var iconRight = mods.as;
 		var controlMods = {
 			i: expanded,
-			aq: iconLeft,
-			ar: iconRight,
+			ar: iconLeft,
+			as: iconRight,
 			B: function () {
 				if (state === 4) {
 					return elm$core$Maybe$Just(size);
@@ -8002,7 +8021,7 @@ var surprisetalk$elm_bulma$Bulma$Form$controlInput = F3(
 					]),
 				attrs_));
 	});
-var surprisetalk$elm_bulma$Bulma$Form$controlInputModifiers = {bp: 0, bt: false, i: false, aq: elm$core$Maybe$Nothing, ar: elm$core$Maybe$Nothing, F: false, aC: false, o: 1, b: 0};
+var surprisetalk$elm_bulma$Bulma$Form$controlInputModifiers = {bq: 0, ak: false, i: false, ar: elm$core$Maybe$Nothing, as: elm$core$Maybe$Nothing, F: false, aD: false, o: 1, b: 0};
 var surprisetalk$elm_bulma$Bulma$Classes$field = elm$html$Html$Attributes$class('field');
 var surprisetalk$elm_bulma$Bulma$Form$field = A2(
 	surprisetalk$elm_bulma$Helpers$node,
@@ -8132,7 +8151,7 @@ var author$project$View$resultView = function (v) {
 				elm$html$Html$a,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$href(v.br)
+						elm$html$Html$Attributes$href(v.bs)
 					]),
 				_List_fromArray(
 					[
@@ -8224,7 +8243,7 @@ var surprisetalk$elm_bulma$Bulma$Classes$isOffset10 = elm$html$Html$Attributes$c
 var surprisetalk$elm_bulma$Bulma$Classes$isOffset11 = elm$html$Html$Attributes$class('is-offset-11');
 var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 	var widths = _n0.ac;
-	var offset = _n0.a$;
+	var offset = _n0.a0;
 	return A2(
 		surprisetalk$elm_bulma$Helpers$node,
 		'div',
@@ -8232,7 +8251,7 @@ var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 			[
 				surprisetalk$elm_bulma$Bulma$Classes$column,
 				function () {
-				var _n1 = widths.aw;
+				var _n1 = widths.ax;
 				if (!_n1.$) {
 					switch (_n1.a) {
 						case 0:
@@ -8277,7 +8296,7 @@ var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 				}
 			}(),
 				function () {
-				var _n14 = widths.aK;
+				var _n14 = widths.aL;
 				if (!_n14.$) {
 					switch (_n14.a) {
 						case 0:
@@ -8367,7 +8386,7 @@ var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 				}
 			}(),
 				function () {
-				var _n40 = widths.aM;
+				var _n40 = widths.aN;
 				if (!_n40.$) {
 					switch (_n40.a) {
 						case 0:
@@ -8412,7 +8431,7 @@ var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 				}
 			}(),
 				function () {
-				var _n53 = widths.am;
+				var _n53 = widths.an;
 				if (!_n53.$) {
 					switch (_n53.a) {
 						case 0:
@@ -8488,13 +8507,13 @@ var surprisetalk$elm_bulma$Bulma$Columns$column = function (_n0) {
 };
 var surprisetalk$elm_bulma$Bulma$Modifiers$Auto = 0;
 var surprisetalk$elm_bulma$Bulma$Columns$columnModifiers = {
-	a$: 0,
+	a0: 0,
 	ac: {
 		aj: elm$core$Maybe$Just(0),
-		am: elm$core$Maybe$Just(0),
-		aw: elm$core$Maybe$Just(0),
-		aK: elm$core$Maybe$Just(0),
-		aM: elm$core$Maybe$Just(0)
+		an: elm$core$Maybe$Just(0),
+		ax: elm$core$Maybe$Just(0),
+		aL: elm$core$Maybe$Just(0),
+		aN: elm$core$Maybe$Just(0)
 	}
 };
 var surprisetalk$elm_bulma$Bulma$Classes$container = elm$html$Html$Attributes$class('container');
@@ -8505,7 +8524,7 @@ var surprisetalk$elm_bulma$Bulma$Layout$container = A2(
 		[surprisetalk$elm_bulma$Bulma$Classes$container]));
 var author$project$View$view = function (model) {
 	return {
-		bk: _List_fromArray(
+		bl: _List_fromArray(
 			[
 				A2(
 				surprisetalk$elm_bulma$Bulma$Layout$container,
@@ -8531,7 +8550,7 @@ var author$project$View$view = function (model) {
 									case 0:
 										return elm$html$Html$text('');
 									case 3:
-										var _n1 = model.as;
+										var _n1 = model.at;
 										if (!_n1.$) {
 											var v = _n1.a;
 											return author$project$View$resultView(v);
@@ -8602,7 +8621,7 @@ var elm$core$String$left = F2(
 var elm$core$String$toInt = _String_toInt;
 var elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {aW: fragment, aX: host, a1: path, a3: port_, a6: protocol, a7: query};
+		return {aX: fragment, aY: host, a2: path, a4: port_, a7: protocol, a8: query};
 	});
 var elm$url$Url$chompBeforePath = F5(
 	function (protocol, path, params, frag, str) {
