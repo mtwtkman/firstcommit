@@ -8,8 +8,8 @@ import Bulma.Form exposing (controlInput, controlInputModifiers, field)
 import Bulma.Layout exposing (container)
 import Bulma.Modifiers exposing (Color(..), Size(..), Width(..))
 import Helper exposing (unwrap)
-import Html exposing (Html, a, div, input, text)
-import Html.Attributes exposing (class, href, placeholder, value)
+import Html exposing (Attribute, Html, a, div, input, text)
+import Html.Attributes exposing (attribute, class, disabled, href, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import Msg exposing (..)
 import Type exposing (..)
@@ -49,13 +49,23 @@ view model =
 
 getFirstCommitButton : Bool -> Html Msg
 getFirstCommitButton sendable =
+    let
+        attrs =
+            case sendable of
+                True ->
+                    [ onClick SendCommitSummaryRequest
+                    ]
+
+                False ->
+                    [ onClick SendCommitSummaryRequest
+                    , attribute "disabled" ""
+                    ]
+    in
     button
         { buttonModifiers
             | color = Link
-            , disabled = not sendable
         }
-        [ onClick SendCommitSummaryRequest
-        ]
+        attrs
         [ text "get first commit" ]
 
 
